@@ -3,14 +3,46 @@
 angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$timeout',
     function($http, $q, $timeout) {
 
+    var baseUrl = 'http://gophergala.justrun.it';
+
     return {
 
         createSnippet: function(languageCode) {
-            var deferred = $q.defer();
-            deferred.resolve({
-                _id: 'foo'
+            return $http({
+                method: 'POST',
+                url: baseUrl + '/snippets',
+                data: {
+                    language_code: languageCode
+                }
             });
-            return deferred.promise;
+        },
+
+        getSnippets: function() {
+            return [];
+        },
+
+        getSnippet: function(snippetId) {
+            return $http({
+                method: 'GET',
+                url: baseUrl + '/snippet/' + snippetId
+            });
+            // return {
+            //     language_code: 'php',
+            //     title: 'Exchange Selection Sort',
+            //     description: 'Simple algorithm to sort a list of numbers.',
+            //     tags: [ 'algorithm', 'web' ],
+            //     code: '<?php\n\necho "Hello World";\n',
+            //     deps: []
+            // };
+        },
+
+        saveSnippet: function(snippet) {
+            delete snippet.langInfo;
+            return $http({
+                method: 'PUT',
+                url: baseUrl + '/snippet/' + snippet._id,
+                data: snippet
+            });
         },
 
         forkSnippet: function(snippetId) {
@@ -20,26 +52,6 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                     _id: 'bar'
                 });
             }, 4000);
-            return deferred.promise;
-        },
-
-        getSnippet: function(snippetId) {
-            return {
-                language_code: 'php',
-                title: 'Exchange Selection Sort',
-                description: 'Simple algorithm to sort a list of numbers.',
-                tags: [ 'algorithm', 'web' ],
-                code: '<?php\n\necho "Hello World";\n',
-                deps: []
-            };
-        },
-
-        saveSnippet: function(snippet) {
-            // delete snippet.langInfo
-            var deferred = $q.defer();
-            $timeout(function() {
-                deferred.resolve({ status: 1 });
-            }, 2000);
             return deferred.promise;
         },
 
