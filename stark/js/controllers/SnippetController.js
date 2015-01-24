@@ -165,12 +165,32 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     var contentHeight = 0.9 * getContentHeight();
     var term = new Terminal({
-      rows: Math.floor( contentHeight / 18),
-      cols: 1,
-      screenKeys: true
+      rows: Math.floor(contentHeight / 14),
+      cols: 80,
+      screenKeys: true,
+      cursorBlink: true 
     });
-    
     term.open(document.getElementById('terminal'));
+
+    // var socket = io.connect();
+    // socket.on('connect', function() {
+        
+    //     term.on('data', function(data) {
+    //       socket.emit('data', data);
+    //     });
+
+    //     term.on('title', function(title) {
+    //       document.title = title;
+    //     });
+
+    //     socket.on('data', function(data) {
+    //       term.write(data);
+    //     });
+
+    //     socket.on('disconnect', function() {
+    //       term.destroy();
+    //     });
+    // });
 
     Mousetrap.bind([ 'command+s', 'ctrl+s' ], function() {
         $scope.$apply(function() {

@@ -9,9 +9,20 @@ md-whiteframe {
   padding: 20px;
 }
 
+.CodeMirror, #terminal {
+  font-family: 'Source Code Pro';
+}
+
 .CodeMirror {
-    font-family: 'Source Code Pro';
-    font-size: 15px;
+  font-size: 14px;
+}
+
+#terminal {
+  font-size: 11px;
+}
+
+#terminal > .terminal {
+  padding: 0.5em;
 }
 
 .md-list-language-chooser .md-tile-icon, .md-snippet-language-icon {
