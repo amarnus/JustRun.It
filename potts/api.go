@@ -101,7 +101,7 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 	if !validated {
 		return
 	}
-	language := body["language"].(string)
+	language := body["language_code"].(string)
 	snippet := models.Snippet{LanguageCode: language}
 	snippetId, ok, err := models.CreateSnippet(&snippet)
 	if err != nil {
