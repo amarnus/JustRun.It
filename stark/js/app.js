@@ -6,7 +6,10 @@ var app = angular.module('justRunIt', [
     'ui.codemirror'
 ]);
 
-app.config([ '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+app.config([ '$stateProvider', '$urlRouterProvider', '$mdThemingProvider',
+    function($stateProvider, $urlRouterProvider, $mdThemingProvider) {
+
+    $mdThemingProvider.theme('default').primaryColor('blue-grey');
 
     $stateProvider.state('snippetGallery', {
         url: '/snippet?tag&me&page',
