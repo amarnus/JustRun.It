@@ -13,7 +13,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     }
 
     // Add default title.
-    snippet.title = snippet.title || snippet.langInfo.name + ' Snippet AVSDVDSFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDFDSFSDFDDFS';
+    snippet.title = snippet.title || snippet.langInfo.name + ' Snippet';
 
     $scope.ui = {
         snippet: snippet,
@@ -66,13 +66,16 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         
         function onError(response) {
             $scope.ui.state.isRunning = false;
+            LocalSnippetService.hideGlobalProgressBar();
             LocalSnippetService.toastError(response.message);
         }
 
         $scope.ui.state.isRunning = true;
+        LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.runSnippet()
             .then(function(response) {
                 $scope.ui.state.isRunning = false;
+                LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
                     onError(response);
                 }
@@ -84,13 +87,16 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
         function onError(response) {
             $scope.ui.state.isSaving = false;
+            LocalSnippetService.hideGlobalProgressBar();
             LocalSnippetService.toastError(response.message);
         }
 
         $scope.ui.state.isSaving = true;
+        LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.saveSnippet(snippet)
             .then(function(response) {
                 $scope.ui.state.isSaving = false;
+                LocalSnippetService.hideGlobalProgressBar();
                 if (response.status) {
                     var message = 'Your ' + snippet.langInfo.name + ' snippet has been saved.';
                     LocalSnippetService.toast(message);

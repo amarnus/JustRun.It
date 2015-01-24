@@ -1,10 +1,18 @@
 'use strict';
 
-angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', function($mdToast) {
+angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootScope', function($mdToast, $rootScope) {
 
     var toastPosition = 'top right';
 
     return {
+
+        showGlobalProgressBar: function() {
+            $rootScope.shouldShowGlobalProgressBar = true;
+        },
+
+        hideGlobalProgressBar: function() {
+            $rootScope.shouldShowGlobalProgressBar = false;
+        },
 
         toast: function(message) {
             var snippetConfig = $mdToast.simple().content(message).position(toastPosition);

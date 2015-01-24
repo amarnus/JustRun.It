@@ -28,7 +28,9 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', fun
 
         saveSnippet: function(snippet) {
             var deferred = $q.defer();
-            deferred.resolve({ status: 1 });
+            setTimeout(function() {
+                deferred.resolve({ status: 1 });
+            }, 2000);
             return deferred.promise;
         },
 
