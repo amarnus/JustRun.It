@@ -27,4 +27,4 @@ pkg/*
 api
 gin-bin
 *.swp
-
+src/code.google.com/*

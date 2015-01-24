@@ -19,9 +19,9 @@ func main() {
 	/* Add routes */
 	router.HandleFunc("/run", docker.RunSnippet).Methods("POST")
 
-	log.Println("Fury server listening on localhost:8080")
+	log.Println("Fury server listening on localhost:8081")
 
-	err := http.ListenAndServe(":8080", router)
+	err := http.ListenAndServe(":8081", router)
 	if err != nil {
 		log.Println(err)
 	}
