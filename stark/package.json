@@ -1,0 +1,15 @@
+{
+  "name": "justrunit-stark-dev",
+  "version": "0.1.0",
+  "description": "Build tools for the JustRun.It web client.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "wiredep": "^2.2.2"
+  }
+}
