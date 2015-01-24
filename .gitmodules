@@ -1,0 +1,3 @@
+[submodule "stark/css/devicon"]
+	path = stark/css/devicon
+	url = git@github.com:konpa/devicon.git
