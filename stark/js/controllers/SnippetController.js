@@ -108,13 +108,13 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.ui.state.isForking = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.forkSnippet(snippet._id)
-            .then(function(response) {
+            .success(function(response) {
                 $scope.ui.state.isForking = false;
                 LocalSnippetService.hideGlobalProgressBar();
                 $state.go('snippetEdit', { snippet_id: response._id });
                 LocalSnippetService.toast('You have successfully forked a ' + snippet.langInfo.name + ' snippet.');
             })
-            .catch(onError);
+            .error(onError);
     };
 
     $scope.runSnippet = function() {
@@ -128,14 +128,14 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.runSnippet(snippet._id)
-            .then(function(response) {
+            .success(function(response) {
                 $scope.ui.state.isRunning = false;
                 LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
                     onError(response);
                 }
             })
-            .catch(onError);
+            .error(onError);
     };
 
     $scope.saveSnippet = function() {
@@ -149,7 +149,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.ui.state.isSaving = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.saveSnippet(snippet)
-            .then(function(response) {
+            .success(function(response) {
                 $scope.ui.state.isSaving = false;
                 LocalSnippetService.hideGlobalProgressBar();
                 if (response.status) {
@@ -160,7 +160,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
                     onError(response);
                 }
             })
-            .catch(onError);
+            .error(onError);
     };
 
     var contentHeight = 0.9 * getContentHeight();
