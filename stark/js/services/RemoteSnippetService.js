@@ -13,19 +13,42 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 url: baseUrl + '/snippets',
                 data: {
                     language_code: languageCode
+                },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
         },
 
-        getSnippets: function() {
-            return [];
+        getSnippets: function(opts) {
+            var deferred = $q.defer();
+            $http({
+                method: 'GET',
+                url: baseUrl + '/snippets',
+                params: opts
+            })
+            .success(function(data) {
+                deferred.resolve(data);
+            })
+            .error(function(data) {
+                deferred.reject(data);
+            });
+            return deferred.promise;
         },
 
         getSnippet: function(snippetId) {
-            return $http({
+            var deferred = $q.defer();
+            $http({
                 method: 'GET',
                 url: baseUrl + '/snippet/' + snippetId
+            })
+            .success(function(data) {
+                deferred.resolve(data);
+            })
+            .error(function(data) {
+                deferred.reject(data);
             });
+            return deferred.promise;
             // return {
             //     language_code: 'php',
             //     title: 'Exchange Selection Sort',
