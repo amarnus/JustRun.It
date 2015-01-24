@@ -1,0 +1,19 @@
+md-whiteframe {
+  background: #fff;
+  margin: 20px;
+  padding: 20px;
+}
+
+.CodeMirror {
+    font-family: 'Source Code Pro';
+    font-size: 15px;
+}
+
+.md-list-language-chooser .md-tile-icon {
+    font-size: 250%;
+}
+
+.md-list-language-chooser .md-tile-name > h2 {
+    margin-bottom: 0;
+    margin-top: 0;
+}
