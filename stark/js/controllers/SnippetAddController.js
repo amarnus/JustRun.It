@@ -13,7 +13,7 @@ angular.module('justRunIt').controller('SnippetAddController', [ '$scope', '$log
             .success(function(response) {
                 var message = 'Your ' + languagePicked.name + ' snippet has been created.';
                 LocalSnippetService.toast(message);
-                $state.go('snippetEdit', { snippet_id: response._id });
+                $state.go('snippetEdit', { snippet_id: response.result._id });
             })
             .error(function(response) {
                 LocalSnippetService.toastError(response.message);

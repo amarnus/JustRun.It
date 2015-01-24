@@ -11,11 +11,8 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             return $http({
                 method: 'POST',
                 url: baseUrl + '/snippets',
-                data: {
+                data: JSON.stringify({
                     language_code: languageCode
-                },
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
         },
@@ -43,7 +40,8 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 url: baseUrl + '/snippet/' + snippetId
             })
             .success(function(data) {
-                deferred.resolve(data);
+                // TODO: Check data.status.
+                deferred.resolve(data.result);
             })
             .error(function(data) {
                 deferred.reject(data);
