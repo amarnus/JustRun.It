@@ -2,7 +2,8 @@
 
 var app = angular.module('justRunIt', [
     'ngMaterial',
-    'ui.router'
+    'ui.router',
+    'ui.codemirror'
 ]);
 
 app.config([ '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -15,8 +16,15 @@ app.config([ '$stateProvider', '$urlRouterProvider', function($stateProvider, $u
 
     $stateProvider.state('snippetAdd', {
         url: '/snippet/add',
-        controller: 'SnippetAddController',
-        templateUrl: 'partials/snippet-add.html'
+        onEnter: [ '$mdDialog', function($mdDialog) {
+            $mdDialog.show({
+                controller: 'SnippetAddController',
+                templateUrl: 'partials/snippet-add.html',
+                clickOutsideToClose: false,
+                escapeToClose: false,
+                hasBackdrop: true
+            });
+        } ]
     });
 
     $stateProvider.state('snippetView', {
