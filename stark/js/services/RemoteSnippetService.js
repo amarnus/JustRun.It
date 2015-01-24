@@ -7,9 +7,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', fun
         createSnippet: function(languageCode) {
             var deferred = $q.defer();
             deferred.resolve({
-                snippet_id: 'foo',
-                code: '',
-                lang: languageCode
+                snippet_id: 'foo'
             });
             // deferred.reject({
             //     code: 'TIMEDOUT',
@@ -20,9 +18,12 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', fun
 
         getSnippet: function(snippetId) {
             return {
+                language_code: 'php',
+                title: 'Exchange Selection Sort',
+                description: 'Simple algorithm to sort a list of numbers.',
+                tags: [ 'algorithm', 'web' ],
                 code: '<?php\n\necho "Hello World"\n',
-                lang: 'php',
-                tags: [ 'algorithm', 'web' ]
+                deps: []
             };
         },
 

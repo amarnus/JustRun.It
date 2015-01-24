@@ -10,8 +10,8 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     var editor;
 
     // Add language info.
-    if (snippet.lang) {
-        snippet.langInfo = supportedLanguages[snippet.lang];
+    if (snippet.language_code) {
+        snippet.langInfo = supportedLanguages[snippet.language_code];
     }
 
     // Add default title.
