@@ -9,7 +9,7 @@ angular.module('justRunIt').controller('SnippetAddController', [ '$scope', '$log
     $scope.pickLanguage = function(lang) {
         $log.log('You picked ' + lang + '...');
         var languagePicked = $scope.languages[lang];
-        RemoteSnippetService.createSnippet({ lang: lang })
+        RemoteSnippetService.createSnippet(lang)
             .success(function(response) {
                 var message = 'Your ' + languagePicked.name + ' snippet has been created.';
                 LocalSnippetService.toast(message);
