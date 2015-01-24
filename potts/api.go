@@ -96,7 +96,7 @@ func FilterSnippetsByTag(resp http.ResponseWriter, req *http.Request) {
 func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 	resp = setACLHeaders(resp)
 	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
-		"language",
+		"language_code",
 	})
 	if !validated {
 		return
