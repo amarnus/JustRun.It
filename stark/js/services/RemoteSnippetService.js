@@ -58,7 +58,8 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
         },
 
         saveSnippet: function(snippet) {
-            delete snippet.langInfo;
+            var snippetClone = _.cloneDeep(snippet);
+            delete snippetClone.langInfo;
             return $http({
                 method: 'PUT',
                 url: baseUrl + '/snippet/' + snippet._id,
