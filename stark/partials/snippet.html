@@ -11,7 +11,7 @@
         <md-tooltip>Browse all snippets</md-tooltip>
       </md-button>&nbsp;
       <md-button ui-sref="snippetAdd">
-        <i class="fa fa-plus"></i>&nbsp;&nbsp;Add a snippet
+        <i class="fa fa-plus"></i>&nbsp;&nbsp;New snippet
         <md-tooltip>Create a new snippet</md-tooltip>
       </md-button>
     </div>
@@ -30,21 +30,19 @@
             </md-input-container>
         </div>
         <div flex></div>
-        <div flex-gt-md="30" flex-sm="35" flex-gt-sm="50">
-            <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving">
-                <i class="fa fa-file-text"></i><span hide-sm>&nbsp;&nbsp;Save</span>
-            </md-button>
-            <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
-                <i class="fa fa-play"></i><span hide-sm>&nbsp;&nbsp;Run</span>
-            </md-button>
-            <md-button ng-click="tagSnippet()">
-              <i class="fa fa-tags"></i><span hide-sm>&nbsp;&nbsp;Tags<span ng-if="ui.snippet.tags.length"> ( {{ ui.snippet.tags.length }} )</span></span>
-            </md-button>
-            <md-button class="md-button-raised md-button-snippet-fork">
-                <i class="fa fa-code-fork"></i><span hide-sm>&nbsp;&nbsp;Fork</span>
-                <md-tooltip>Create a copy of this snippet</md-tooltip>
-            </md-button>
-        </div>
+        <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving">
+            <i class="fa fa-file-text"></i><span hide-sm>&nbsp;&nbsp;Save</span>
+        </md-button>&nbsp;
+        <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
+            <i class="fa fa-play"></i><span hide-sm>&nbsp;&nbsp;Run</span>
+        </md-button>&nbsp;
+        <md-button ng-click="tagSnippet()">
+          <i class="fa fa-tags"></i><span hide-sm>&nbsp;&nbsp;Tags<span ng-if="ui.snippet.tags.length"> ( {{ ui.snippet.tags.length }} )</span></span>
+        </md-button>&nbsp;
+        <md-button class="md-button-raised md-button-snippet-fork">
+            <i class="fa fa-code-fork"></i><span hide-sm>&nbsp;&nbsp;Fork</span>
+            <md-tooltip>Create a copy of this snippet</md-tooltip>
+        </md-button>
     </div>
   </md-toolbar>
   <md-content>

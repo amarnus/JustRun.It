@@ -22,7 +22,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', fun
                 title: 'Exchange Selection Sort',
                 description: 'Simple algorithm to sort a list of numbers.',
                 tags: [ 'algorithm', 'web' ],
-                code: '<?php\n\necho "Hello World"\n',
+                code: '<?php\n\necho "Hello World";\n',
                 deps: []
             };
         },
