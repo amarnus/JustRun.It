@@ -2,7 +2,7 @@
   <md-content>
     <h1>Pick a language below to get started</h1>
     <md-list class="md-list-language-chooser">
-      <md-item ng-repeat="l in languages">
+      <md-item ng-repeat="(code, l) in languages">
         <md-item-content>
           <div class="md-tile-left md-tile-icon" layout="row" layout-align="left center">
             <i class="{{ l.icon }}" ng-if="l.icon"></i>   
@@ -11,7 +11,7 @@
             <h2>{{ l.name }}</h2>
           </div>
           <div class="md-tile-right">
-            <md-button class="md-raised md-primary" ng-click="pickLanguage(l)">Pick</md-button>    
+            <md-button class="md-raised md-primary" ng-click="pickLanguage(code)">Pick</md-button>    
           </div>
         </md-item-content>
         <md-divider ng-if="!$last"></md-divider>

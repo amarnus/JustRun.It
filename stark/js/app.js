@@ -24,25 +24,43 @@ app.config([ '$stateProvider', '$urlRouterProvider', function($stateProvider, $u
                 escapeToClose: false,
                 hasBackdrop: true
             });
+        } ],
+        onExit: [ '$mdDialog', function($mdDialog) {
+            $mdDialog.hide();
         } ]
     });
 
     $stateProvider.state('snippetView', {
         url: '/snippet/:snippet_id',
-        controller: 'SnippetViewController',
-        templateUrl: 'partials/snippet.html'
+        controller: 'SnippetController',
+        templateUrl: 'partials/snippet.html',
+        resolve: {
+            snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
+                return RemoteSnippetService.getSnippet($stateParams.snippet_id);
+            } ]
+        }
     });
 
     $stateProvider.state('snippetEdit', {
         url: '/snippet/:snippet_id/edit',
-        controller: 'SnippetEditController',
-        templateUrl: 'partials/snippet.html'
+        controller: 'SnippetController',
+        templateUrl: 'partials/snippet.html',
+        resolve: {
+            snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
+                return RemoteSnippetService.getSnippet($stateParams.snippet_id);
+            } ]
+        }
     });
 
     $stateProvider.state('snippetEmbed', {
         url: '/snippet/:snippet_id/embed',
-        controller: 'SnippetViewController',
-        templateUrl: 'partials/snippet-embed.html'
+        controller: 'SnippetController',
+        templateUrl: 'partials/snippet-embed.html',
+        resolve: {
+            snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
+                return RemoteSnippetService.getSnippet($stateParams.snippet_id);
+            } ]
+        }
     });
 
     $urlRouterProvider.otherwise('/snippet/add');

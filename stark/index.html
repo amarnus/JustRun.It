@@ -5,6 +5,8 @@
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
   <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
   <!-- endbower -->
+  <link rel="stylesheet" href="bower_components/codemirror/theme/solarized.css" />
+  <link rel="stylesheet" href="bower_components/codemirror/theme/3024-night.css" />
   <link rel="stylesheet" href="bower_components/font-awesome-bower/css/font-awesome.css" />
   <link rel="stylesheet" href="css/devicon/devicon.css" />
   <link rel="stylesheet" href="css/main.css" />
@@ -12,6 +14,7 @@
 <body>
   <div ui-view></div>
   <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-aria/angular-aria.js"></script>
@@ -22,12 +25,20 @@
   <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
   <!-- endbower -->
   <script src="bower_components/term.js/src/term.js"></script>
+  <script src="bower_components/codemirror/mode/clike/clike.js"></script>
+  <script src="bower_components/codemirror/mode/xml/xml.js"></script>
+  <script src="bower_components/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+  <script src="bower_components/codemirror/mode/php/php.js"></script>
+  <script src="bower_components/codemirror/mode/go/go.js"></script>
+  <script src="bower_components/codemirror/mode/ruby/ruby.js"></script>
+  <script src="bower_components/codemirror/mode/python/python.js"></script>
+  <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
+  <script src="bower_components/codemirror/mode/clojure/clojure.js"></script>
   <script src="js/app.js"></script>
   <script src="js/services/LocalSnippetService.js"></script>
   <script src="js/services/RemoteSnippetService.js"></script>
   <script src="js/controllers/SnippetGalleryController.js"></script>
   <script src="js/controllers/SnippetAddController.js"></script>
-  <script src="js/controllers/SnippetEditController.js"></script>
-  <script src="js/controllers/SnippetViewController.js"></script>
+  <script src="js/controllers/SnippetController.js"></script>
 </body>
 </html>

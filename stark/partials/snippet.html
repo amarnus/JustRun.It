@@ -1,1 +1,47 @@
-<h1>Snippet Edit mode/Run mode</h1>
+<div layout="column" layout-fill>
+  <md-toolbar class="md-hue-2">
+    <div class="md-toolbar-tools">
+      <span>JustRun.It</span>
+      <span flex></span>
+    </div>
+  </md-toolbar>
+  <md-divider></md-divider>
+  <md-toolbar>
+    <div class="md-toolbar-tools" layout="row">
+        <div flex="70">
+            <div layout="row" layout-align="left center"layout-fill>
+                <div class="md-snippet-language-icon">
+                    <i class="{{ ui.snippet.langInfo.icon }}" ng-if="ui.snippet.langInfo.icon"></i>
+                </div>
+                <div class="md-snippet-title" layout="row" layout-align="left center">
+                    <span>{{ ui.snippet.langInfo.name }} Snippet</span>
+                </div>
+            </div>
+        </div>
+        <div flex="30">
+            <md-button class="md-button-snippet-save">
+                <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Install
+            </md-button>
+            <md-button class="md-button-snippet-save">
+                <i class="fa fa-file-text"></i>&nbsp;&nbsp;Save
+            </md-button>
+            <md-button class="md-button-snippet-run">
+                <i class="fa fa-play"></i>&nbsp;&nbsp;Run
+            </md-button>
+            <md-button class="md-button-raised md-button-snippet-fork">
+                <i class="fa fa-code-fork"></i>&nbsp;&nbsp;Fork
+            </md-button>
+        </div>
+    </div>
+  </md-toolbar>
+  <md-content>
+    <div layout="row">
+        <div flex="50">
+            <div ui-codemirror="{ onLoad: onEditorLoad }" ui-codemirror-opts="ui.editorConfig" ng-model="ui.snippet.code"></div>
+        </div>
+        <div flex="50">
+            <div id="terminal"></div>
+        </div>
+    </div>
+  </md-content>
+</div>
