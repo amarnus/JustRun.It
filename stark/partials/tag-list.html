@@ -1,0 +1,19 @@
+<md-dialog class="md-dialog-snippet-tags" flex="60">
+  <md-content>
+    <h1>Tags</h1>
+    <md-divider></md-divider>
+    <md-list class="md-list-snippet-tags" layout="row" layout-wrap>
+      <md-item ng-repeat="tagIndex in tagIndices">
+        <md-item-content>
+          <div class="md-tile-content md-tile-name" layout="row" layout-align="left center">
+            <md-input-container flex>
+                <label>{{ $index + 1 }}.</label>
+                <input type="text" ng-model="tags[$index]"/>
+            </md-input-container>
+          </div>
+        </md-item-content>
+      </md-item>
+    </md-list>
+    <md-button class="md-raised md-primary" ng-click="saveTags()">Save</md-button>
+  </md-content>
+</md-dialog>

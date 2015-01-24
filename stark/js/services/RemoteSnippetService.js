@@ -21,7 +21,8 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', fun
         getSnippet: function(snippetId) {
             return {
                 code: '<?php\n\necho "Hello World"\n',
-                lang: 'php'
+                lang: 'php',
+                tags: [ 'algorithm', 'web' ]
             };
         },
 

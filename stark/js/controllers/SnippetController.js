@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', '$window',
-    '$stateParams', '$mdToast', 'snippet', 'LocalSnippetService', 'RemoteSnippetService', 
-    function($scope, $log, $window, $stateParams, $mdToast,
+    '$stateParams', '$mdToast', '$mdDialog', 'snippet', 'LocalSnippetService', 'RemoteSnippetService', 
+    function($scope, $log, $window, $stateParams, $mdToast, $mdDialog,
         snippet, LocalSnippetService, RemoteSnippetService) {
 
     var supportedLanguages = LocalSnippetService.getSupportedLanguages();
@@ -37,6 +37,29 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     $scope.onEditorLoad = function(instance) {
         var editorHeight = getContentHeight();
         instance.setSize('100%', 0.9 * editorHeight);
+    };
+
+    $scope.tagSnippet = function() {
+        $mdDialog.show({
+            controller: [ '$scope', function($scope) {
+                $scope.tagIndices = [ 1, 2, 3, 4, 5 ];
+                $scope.tags = snippet.tags;
+                $scope.saveTags = function() {
+                    var tags = [];
+                    for(var i = 0; i < $scope.tags.length; i++) {
+                        if ($scope.tags[i]) {
+                            tags.push($scope.tags[i]);
+                        }
+                    }
+                    snippet.tags = tags;
+                    $mdDialog.hide();
+                }
+            } ],
+            templateUrl: 'partials/tag-list.html',
+            clickOutsideToClose: true,
+            escapeToClose: true,
+            hasBackdrop: true
+        });
     };
 
     $scope.runSnippet = function() {

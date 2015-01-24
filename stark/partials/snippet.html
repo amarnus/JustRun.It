@@ -20,18 +20,22 @@
             <i class="md-snippet-language-icon {{ ui.snippet.langInfo.icon }}" ng-if="ui.snippet.langInfo.icon">
             </i>
         </div>
-        <div flex="75" layout-fill>
+        <div flex="40" layout-fill>
             <md-input-container class="md-snippet-title">
                 <label>Title</label>
                 <input ng-model="ui.snippet.title" maxlength="40"></input>
             </md-input-container>
         </div>
-        <div flex="20">
+        <div flex></div>
+        <div flex="30">
             <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving">
                 <i class="fa fa-file-text"></i>&nbsp;&nbsp;Save
             </md-button>
             <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
                 <i class="fa fa-play"></i>&nbsp;&nbsp;Run
+            </md-button>
+            <md-button ng-click="tagSnippet()">
+              <i class="fa fa-tags"></i>&nbsp;&nbsp;Tags <span ng-if="ui.snippet.tags.length">( {{ ui.snippet.tags.length }} )</span>
             </md-button>
             <md-button class="md-button-raised md-button-snippet-fork">
                 <i class="fa fa-code-fork"></i>&nbsp;&nbsp;Fork
@@ -43,8 +47,13 @@
   <md-content>
     <div layout="row">
         <div flex="50">
-            <md-card class="md-card-editor">
-                <div ui-codemirror="{ onLoad: onEditorLoad }" ui-codemirror-opts="ui.editorConfig" ng-model="ui.snippet.code"></div>
+            <md-card class="md-card-editor" style="position:relative">
+                <md-button class="md-fab md-fab-bottom-right">
+                  <i class="fa fa-paint-brush">
+                  </i>
+                </md-button>
+                <div ui-codemirror="{ onLoad: onEditorLoad }" ui-codemirror-opts="ui.editorConfig" ng-model="ui.snippet.code">
+                </div>
             </md-card>
         </div>
         <div flex="50">
