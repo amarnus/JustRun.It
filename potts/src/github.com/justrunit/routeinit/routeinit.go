@@ -18,7 +18,7 @@ type ApiResponse struct {
 	ErrorMessage string      `json:"error,omitempty"`
 	Id           string      `json:"id,omitempty"`
 	Result       interface{} `json:"result,omitempty"`
-	Status       int         `json:"status"`
+	Status       bool        `json:"status"`
 }
 
 /* Initializes variables needed to handle every request and authenticates and authorizes the request */
@@ -53,7 +53,7 @@ func InitHandling(
 		// If missing fields, set response
 		if fields != "" {
 			resp.WriteHeader(http.StatusBadRequest)
-			enc.Encode(ApiResponse{fields + " not present", "", nil, 0})
+			enc.Encode(ApiResponse{fields + " not present", "", nil, false})
 		}
 	}
 
@@ -77,7 +77,7 @@ func validateRequest(
 		if err := json.Unmarshal(buf.Bytes(), &dat); err != nil {
 			log.Println(err)
 			resp.WriteHeader(http.StatusBadRequest)
-			err = enc.Encode(ApiResponse{"malformed json", "", nil, 0})
+			err = enc.Encode(ApiResponse{"malformed json", "", nil, false})
 			ok = false
 		}
 	}
