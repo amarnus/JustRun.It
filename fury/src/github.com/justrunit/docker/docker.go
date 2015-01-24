@@ -13,6 +13,7 @@ import (
 	"strings"
 	"github.com/justrunit/routeinit"
 	"github.com/justrunit/furyutils"
+	"github.com/justrunit/languages"
 )
 
 var DockerContainers = make(map[string]interface{})
@@ -21,8 +22,7 @@ func RunSnippet(resp http.ResponseWriter, req *http.Request) {
 	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
 		"language",
 		"uid",
-		"snippet",
-		"deps"})
+		"snippet"})
 	if !validated {
 		return
 	}
@@ -43,7 +43,8 @@ func setContainerContext(body map[string]interface{}) (status int, msg string, u
 
 	// 1. Create snippet dir if it does not exist
 	if !furyutils.DirExists(dir) {
-		err := os.MkdirAll(dir, 00777)
+		err := os.Mkdir(dir, 0777)
+		exec.Command("bash", "-c", "chmod -R ugo+rw "+ dir).Output()
 		if err != nil {
 			msg = "Error creating container dir: " + err.Error()
 			status = 0
@@ -71,9 +72,23 @@ func setContainerContext(body map[string]interface{}) (status int, msg string, u
 
 /* Set language context like dependency files/folder initializations */
 func setLanguageContext(dir string, language string) {
-	if language == "python" {
-		ioutil.WriteFile(dir + "/requirements.txt", []byte(""), 0700)
-	}
+
+	// Read config file for languages
+	languageConfigs := languages.GetLanguageConfigs()
+	log.Println(languageConfigs)
+
+	// Get code file path
+	code := dir + "/code"
+
+	// Language specific configs
+	lc := languageConfigs[language].(map[string]interface{})
+	cmd := "cat " + code + " | " + lc["deps_grep"].(string)
+
+	// Generate deps
+	deps, _ := exec.Command("bash", "-c", cmd).Output()
+
+	// Write to deps file
+	ioutil.WriteFile(dir + "/" + lc["deps_file"].(string), []byte(deps), 0777)
 }
 
 func executeContainer(uid string) (results []string) {
