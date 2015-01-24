@@ -13,7 +13,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 url: baseUrl + '/snippets',
                 data: JSON.stringify({
                     language_code: languageCode
-                }
+                })
             });
         },
 
