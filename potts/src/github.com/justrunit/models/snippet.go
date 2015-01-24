@@ -7,13 +7,14 @@ import (
 )
 
 type Snippet struct {
-	LanguageCode string   `json:"language_code"`
-	SessionId    string   `json:"session_id"`
-	Title        string   `json:"title"`
-	Description  string   `json:"description"`
-	Tags         []string `json:"tags"`
-	Code         string   `json:"code"`
-	Deps         []string `json:"deps"`
+	Id           bson.ObjectId `json:"_id"            bson:"_id"`
+	LanguageCode string        `json:"language_code"  bson:"language_code"`
+	SessionId    string        `json:"session_id"     bson:"session_id"`
+	Title        string        `json:"title"          bson:"title"`
+	Description  string        `json:"description"    bson:"description"`
+	Tags         []string      `json:"tags"           bson:"tags"`
+	Code         string        `json:"code"           bson:"code"`
+	Deps         []string      `json:"deps"           bson:"deps"`
 }
 
 func getCollection(db string, collection string) (session *mgo.Session, c *mgo.Collection, err error) {
@@ -29,9 +30,11 @@ func getCollection(db string, collection string) (session *mgo.Session, c *mgo.C
 	return
 }
 
-func CreateSnippet(snippet *Snippet) (ok bool, err error) {
+func CreateSnippet(snippet *Snippet) (id string, ok bool, err error) {
 	session, c, _ := getCollection("user_snippets", "snippets")
 	defer session.Close()
+	snippet.Id = bson.NewObjectId()
+	id = snippet.Id.Hex()
 	err = c.Insert(snippet)
 	if err != nil {
 		log.Fatal(err)
@@ -57,6 +60,7 @@ func FindSnippetById(snippetId string) (snippet *Snippet, err error) {
 func UpdateSnippetById(snippetId string, snippet *Snippet) (ok bool, err error) {
 	session, c, _ := getCollection("user_snippets", "snippets")
 	defer session.Close()
+	snippet.Id = bson.ObjectIdHex(snippetId)
 	err = c.UpdateId(bson.ObjectIdHex(snippetId), snippet)
 	ok = true
 	if err != nil {
@@ -71,7 +75,7 @@ func FindSnippetsByUser(snippetUser string) (snippets []Snippet, err error) {
 	snippets = []Snippet{}
 	session, c, _ := getCollection("user_snippets", "snippets")
 	defer session.Close()
-	err = c.Find(bson.M{"sessionid": snippetUser}).Iter().All(&snippets)
+	err = c.Find(bson.M{"session_id": snippetUser}).Iter().All(&snippets)
 	if err != nil {
 		log.Fatal(err)
 		return
