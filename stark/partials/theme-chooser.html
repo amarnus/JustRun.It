@@ -1,0 +1,19 @@
+<md-dialog class="md-dialog-theme-chooser" flex="60" flex-sm="100">
+  <md-content>
+    <h1>Choose a theme</h1>
+    <md-radio-group ng-model="editorTheme">
+    <md-list class="md-list-theme-chooser">
+      <md-item ng-repeat="t in themes">
+        <md-item-content>
+            <div class="md-tile-content md-tile-name" layout="row" layout-align="left center">
+                <md-radio-button value="{{ t }}" aria-label="{{ t }}">
+                    {{ t }}
+                </md-radio-button>
+            </div>
+        </md-item-content>
+        <md-divider ng-if="!$last"></md-divider>
+      </md-item>
+    </md-list>
+    </md-radio-group>
+  </md-content>
+</md-dialog>

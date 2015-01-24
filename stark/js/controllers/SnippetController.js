@@ -6,6 +6,8 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         snippet, LocalSnippetService, RemoteSnippetService) {
 
     var supportedLanguages = LocalSnippetService.getSupportedLanguages();
+    var editorTheme = localStorage.getItem('editorTheme') || 'default';
+    var editor;
 
     // Add language info.
     if (snippet.lang) {
@@ -20,7 +22,8 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         editorConfig: {
             lineNumbers: true,
             mode: snippet.langInfo.mimeType,
-            autofocus: true
+            autofocus: true,
+            theme: editorTheme
         },
         state: {
             isSaving: false,
@@ -34,9 +37,39 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         return (viewportHeight - 128);
     }
 
-    $scope.onEditorLoad = function(instance) {
+    function setEditorHeight() {
         var editorHeight = getContentHeight();
-        instance.setSize('100%', 0.9 * editorHeight);
+        editor.setSize('100%', 0.9 * editorHeight);
+    }
+
+    $scope.onEditorLoad = function(instance) {
+        editor = instance;
+        setEditorHeight();
+    };
+
+    $(window).resize(setEditorHeight);
+
+    $scope.openThemeChooser = function() {
+        $mdDialog.show({
+            controller: [ '$scope', function($scope) {
+                $scope.editorTheme = editorTheme;
+                $scope.themes = [ 'default', 'solarized', '3024-night' ];
+                $scope.$watch('editorTheme', function(newValue, oldValue) {
+                    if (typeof(oldValue) === 'undefined') {
+                        return;
+                    }
+                    if (newValue === oldValue) {
+                        return;
+                    }
+                    editor.setOption('theme', newValue);
+                    localStorage.setItem('editorTheme', newValue);
+                });
+            } ],
+            templateUrl: 'partials/theme-chooser.html',
+            clickOutsideToClose: true,
+            escapeToClose: true,
+            hasBackdrop: false
+        });
     };
 
     $scope.tagSnippet = function() {
