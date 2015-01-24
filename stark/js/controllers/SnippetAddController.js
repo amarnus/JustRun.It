@@ -11,11 +11,12 @@ angular.module('justRunIt').controller('SnippetAddController', [ '$scope', '$log
         var languagePicked = $scope.languages[lang];
         RemoteSnippetService.createSnippet({ lang: lang })
             .then(function(snippet) {
-                $mdToast.show($mdToast.simple().content('Your ' + languagePicked.name + ' snippet has been created.'));
+                var message = 'Your ' + languagePicked.name + ' snippet has been created.';
+                LocalSnippetService.toast(message);
                 $state.go('snippetEdit', { snippet_id: snippet.snippet_id });
             })
-            .catch(function() {
-                // Respond to error.
+            .catch(function(response) {
+                LocalSnippetService.toastError(response.message);
             });
     };
 

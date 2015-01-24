@@ -1,35 +1,41 @@
 <div layout="column" layout-fill>
   <md-toolbar class="md-hue-2">
     <div class="md-toolbar-tools">
-      <span>JustRun.It</span>
+      <h1><span>JustRun.It</span></h1>
       <span flex></span>
+      <md-button>
+        <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Gallery
+        <md-tooltip>Browse all snippets</md-tooltip>
+      </md-button>&nbsp;
+      <md-button ui-sref="snippetAdd">
+        <i class="fa fa-plus"></i>&nbsp;&nbsp;Add a snippet
+        <md-tooltip>Create a new snippet</md-tooltip>
+      </md-button>
     </div>
   </md-toolbar>
   <md-divider></md-divider>
   <md-toolbar>
-    <div class="md-toolbar-tools" layout="row">
-        <div flex="70">
-            <div layout="row" layout-align="left center"layout-fill>
-                <div class="md-snippet-language-icon">
-                    <i class="{{ ui.snippet.langInfo.icon }}" ng-if="ui.snippet.langInfo.icon"></i>
-                </div>
-                <div class="md-snippet-title" layout="row" layout-align="left center">
-                    <span>{{ ui.snippet.langInfo.name }} Snippet</span>
-                </div>
-            </div>
+    <div class="md-toolbar-tools" layout="row" layout-align="left center">
+        <div flex="5">
+            <i class="md-snippet-language-icon {{ ui.snippet.langInfo.icon }}" ng-if="ui.snippet.langInfo.icon">
+            </i>
         </div>
-        <div flex="30">
-            <md-button class="md-button-snippet-save">
-                <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Install
-            </md-button>
-            <md-button class="md-button-snippet-save">
+        <div flex="75" layout-fill>
+            <md-input-container class="md-snippet-title">
+                <label>Title</label>
+                <input ng-model="ui.snippet.title" maxlength="40"></input>
+            </md-input-container>
+        </div>
+        <div flex="20">
+            <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving">
                 <i class="fa fa-file-text"></i>&nbsp;&nbsp;Save
             </md-button>
-            <md-button class="md-button-snippet-run">
+            <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
                 <i class="fa fa-play"></i>&nbsp;&nbsp;Run
             </md-button>
             <md-button class="md-button-raised md-button-snippet-fork">
                 <i class="fa fa-code-fork"></i>&nbsp;&nbsp;Fork
+                <md-tooltip>Create a copy of this snippet</md-tooltip>
             </md-button>
         </div>
     </div>
@@ -37,10 +43,14 @@
   <md-content>
     <div layout="row">
         <div flex="50">
-            <div ui-codemirror="{ onLoad: onEditorLoad }" ui-codemirror-opts="ui.editorConfig" ng-model="ui.snippet.code"></div>
+            <md-card class="md-card-editor">
+                <div ui-codemirror="{ onLoad: onEditorLoad }" ui-codemirror-opts="ui.editorConfig" ng-model="ui.snippet.code"></div>
+            </md-card>
         </div>
         <div flex="50">
-            <div id="terminal"></div>
+            <md-card class="md-card-terminal">
+                <div id="terminal"></div>
+            </md-card>
         </div>
     </div>
   </md-content>

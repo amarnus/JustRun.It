@@ -1,8 +1,25 @@
 'use strict';
 
-angular.module('justRunIt').factory('LocalSnippetService', [ function() {
+angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', function($mdToast) {
+
+    var toastPosition = 'top right';
 
     return {
+
+        toast: function(message) {
+            var snippetConfig = $mdToast.simple().content(message).position(toastPosition);
+            $mdToast.show(snippetConfig);
+        },
+
+        toastError: function(message) {
+            $mdToast.show({
+                controller: [ '$scope', function($scope) {
+                    $scope.message = message;
+                } ],
+                templateUrl: 'partials/toast-error.html',
+                position: toastPosition
+            });
+        },
 
         getSupportedLanguages: function() {
             return {

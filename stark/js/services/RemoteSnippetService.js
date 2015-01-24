@@ -25,24 +25,22 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', fun
             };
         },
 
-        saveSnippet: function() {
-
+        saveSnippet: function(snippet) {
+            var deferred = $q.defer();
+            deferred.resolve({ status: 1 });
+            return deferred.promise;
         },
 
         runSnippet: function() {
-
-        },
-
-        installSnippetDeps: function() {
-
+            var deferred = $q.defer();
+            deferred.resolve({ status: 0, message: 'Your snippet cannot be run now as our backend isn\'t ready yet' });
+            return deferred.promise;
         },
 
         lintSnippet: function() {
-
-        },
-
-        removeSnippet: function() {
-            
+            var deferred = $q.defer();
+            deferred.resolve({ status: 1, messages: [] });
+            return deferred.promise;
         }
 
     };

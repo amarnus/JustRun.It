@@ -1,7 +1,6 @@
 html, body {
     height: 100%;
     margin: 0;
-    overflow-y: hidden;
 }
 
 md-whiteframe {
@@ -24,7 +23,18 @@ md-whiteframe {
     margin-top: 0;
 }
 
-.md-snippet-title {
-  line-height: 250%;
-  margin-left: 0.5em;
+md-input-container.md-snippet-title.md-default-theme .md-input {
+  color: white;
+}
+
+md-input-container.md-snippet-title label {
+  visibility: hidden;
+}
+
+.md-card-terminal {
+  padding: 5px;
+}
+
+md-toast.md-error i {
+  color: red;
 }
