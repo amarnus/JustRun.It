@@ -16,37 +16,37 @@
   <md-divider></md-divider>
   <md-toolbar>
     <div class="md-toolbar-tools" layout="row" layout-align="left center">
-        <div flex="5">
+        <div flex-gt-md="5" flex-gt-sm="10" flex-sm="15">
             <i class="md-snippet-language-icon {{ ui.snippet.langInfo.icon }}" ng-if="ui.snippet.langInfo.icon">
             </i>
         </div>
-        <div flex="40" layout-fill>
+        <div flex-gt-md="50" flex-sm="50" flex-gt-sm="35" layout-fill>
             <md-input-container class="md-snippet-title">
                 <label>Title</label>
                 <input ng-model="ui.snippet.title" maxlength="40"></input>
             </md-input-container>
         </div>
         <div flex></div>
-        <div flex="30">
+        <div flex-gt-md="30" flex-sm="35" flex-gt-sm="50">
             <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving">
-                <i class="fa fa-file-text"></i>&nbsp;&nbsp;Save
+                <i class="fa fa-file-text"></i><span hide-sm>&nbsp;&nbsp;Save</span>
             </md-button>
             <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
-                <i class="fa fa-play"></i>&nbsp;&nbsp;Run
+                <i class="fa fa-play"></i><span hide-sm>&nbsp;&nbsp;Run</span>
             </md-button>
             <md-button ng-click="tagSnippet()">
-              <i class="fa fa-tags"></i>&nbsp;&nbsp;Tags <span ng-if="ui.snippet.tags.length">( {{ ui.snippet.tags.length }} )</span>
+              <i class="fa fa-tags"></i><span hide-sm>&nbsp;&nbsp;Tags<span ng-if="ui.snippet.tags.length"> ( {{ ui.snippet.tags.length }} )</span></span>
             </md-button>
             <md-button class="md-button-raised md-button-snippet-fork">
-                <i class="fa fa-code-fork"></i>&nbsp;&nbsp;Fork
+                <i class="fa fa-code-fork"></i><span hide-sm>&nbsp;&nbsp;Fork</span>
                 <md-tooltip>Create a copy of this snippet</md-tooltip>
             </md-button>
         </div>
     </div>
   </md-toolbar>
   <md-content>
-    <div layout="row">
-        <div flex="50">
+    <div layout-gt-md="row" layout-gt-sm="column" layout-sm="column">
+        <div flex-gt-md="50" flex-gt-sm="100" flex-sm="100">
             <md-card class="md-card-editor" style="position:relative">
                 <md-button class="md-fab md-fab-bottom-right">
                   <i class="fa fa-paint-brush">
@@ -56,7 +56,7 @@
                 </div>
             </md-card>
         </div>
-        <div flex="50">
+        <div flex-gt-md="50" flex-gt-sm="100" flex-sm="100">
             <md-card class="md-card-terminal">
                 <div id="terminal"></div>
             </md-card>

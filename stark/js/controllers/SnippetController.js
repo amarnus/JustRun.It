@@ -13,7 +13,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     }
 
     // Add default title.
-    snippet.title = snippet.title || snippet.langInfo.name + ' Snippet';
+    snippet.title = snippet.title || snippet.langInfo.name + ' Snippet AVSDVDSFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDFSDFDSFSDFDDFS';
 
     $scope.ui = {
         snippet: snippet,

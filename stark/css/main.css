@@ -25,6 +25,7 @@ md-whiteframe {
 
 md-input-container.md-snippet-title.md-default-theme .md-input {
   color: white;
+  text-overflow: ellipsis;
 }
 
 md-input-container.md-snippet-title label {
