@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', '$window',
+angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', '$window', '$state',
     '$stateParams', '$mdToast', '$mdDialog', 'snippet', 'LocalSnippetService', 'RemoteSnippetService', 
-    function($scope, $log, $window, $stateParams, $mdToast, $mdDialog,
+    function($scope, $log, $window, $state, $stateParams, $mdToast, $mdDialog,
         snippet, LocalSnippetService, RemoteSnippetService) {
 
     var supportedLanguages = LocalSnippetService.getSupportedLanguages();
@@ -28,7 +28,8 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         state: {
             isSaving: false,
             isRunning: false,
-            isForking: false
+            isForking: false,
+            isLinting: false
         }
     };
 
@@ -61,6 +62,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
                     if (newValue === oldValue) {
                         return;
                     }
+                    editorTheme = newValue;
                     editor.setOption('theme', newValue);
                     localStorage.setItem('editorTheme', newValue);
                 });
@@ -95,6 +97,26 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         });
     };
 
+    $scope.forkSnippet = function() {
+        
+        function onError(response) {
+            $scope.ui.state.isForking = false;
+            LocalSnippetService.hideGlobalProgressBar();
+            LocalSnippetService.toastError(response.message);
+        }
+
+        $scope.ui.state.isForking = true;
+        LocalSnippetService.showGlobalProgressBar();
+        RemoteSnippetService.forkSnippet(snippet._id)
+            .then(function(response) {
+                $scope.ui.state.isForking = false;
+                LocalSnippetService.hideGlobalProgressBar();
+                $state.go('snippetEdit', { snippet_id: response._id });
+                LocalSnippetService.toast('You have successfully forked a ' + snippet.langInfo.name + ' snippet.');
+            })
+            .catch(onError);
+    };
+
     $scope.runSnippet = function() {
         
         function onError(response) {
@@ -105,7 +127,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();
-        RemoteSnippetService.runSnippet()
+        RemoteSnippetService.runSnippet(snippet._id)
             .then(function(response) {
                 $scope.ui.state.isRunning = false;
                 LocalSnippetService.hideGlobalProgressBar();
@@ -149,5 +171,41 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     });
     
     term.open(document.getElementById('terminal'));
+
+    Mousetrap.bind([ 'command+s', 'ctrl+s' ], function() {
+        $scope.$apply(function() {
+            if (!$scope.ui.state.isSaving) {
+                $scope.saveSnippet();
+            }
+        });
+        return false;
+    });
+
+    Mousetrap.bind([ 'command+r', 'ctrl+r' ], function() {
+        $scope.$apply(function() {
+            if (!$scope.ui.state.isRunning) {
+                $scope.runSnippet();
+            }
+        });
+        return false;
+    });
+
+    Mousetrap.bind([ 'command+l', 'ctrl+l' ], function() {
+        $scope.$apply(function() {
+            if (!$scope.ui.state.isLinting) {
+                // TODO: Lint
+            }
+        });
+        return false;
+    });
+
+    Mousetrap.bind([ 'command+k', 'ctrl+k' ], function() {
+        $scope.$apply(function() {
+            if (!$scope.ui.state.isForking) {
+                $scope.forkSnippet();
+            }
+        });
+        return false;
+    });
 
 } ]);

@@ -1,4 +1,4 @@
-<div layout="column" layout-fill>
+  <div layout="column" layout-fill>
   <md-toolbar class="md-hue-2">
     <div class="md-toolbar-tools">
       <h1><span>JustRun.It</span></h1>
@@ -39,7 +39,7 @@
         <md-button ng-click="tagSnippet()">
           <i class="fa fa-tags"></i><span hide-sm>&nbsp;&nbsp;Tags<span ng-if="ui.snippet.tags.length"> ( {{ ui.snippet.tags.length }} )</span></span>
         </md-button>&nbsp;
-        <md-button class="md-button-raised md-button-snippet-fork">
+        <md-button class="md-button-raised md-button-snippet-fork" ng-click="forkSnippet()" ng-disabled="ui.state.isForking">
             <i class="fa fa-code-fork"></i><span hide-sm>&nbsp;&nbsp;Fork</span>
             <md-tooltip>Create a copy of this snippet</md-tooltip>
         </md-button>
