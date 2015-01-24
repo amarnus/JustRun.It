@@ -5,7 +5,39 @@ var app = angular.module('justRunIt', [
     'ui.router'
 ]);
 
-app.config([ function() {
+app.config([ '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+
+    $stateProvider.state('snippetGallery', {
+        url: '/snippet?tag&me&page',
+        controller: 'SnippetGalleryController',
+        templateUrl: 'partials/snippet-gallery.html'
+    });
+
+    $stateProvider.state('snippetAdd', {
+        url: '/snippet/add',
+        controller: 'SnippetAddController',
+        templateUrl: 'partials/snippet-add.html'
+    });
+
+    $stateProvider.state('snippetView', {
+        url: '/snippet/:snippet_id',
+        controller: 'SnippetViewController',
+        templateUrl: 'partials/snippet.html'
+    });
+
+    $stateProvider.state('snippetEdit', {
+        url: '/snippet/:snippet_id/edit',
+        controller: 'SnippetEditController',
+        templateUrl: 'partials/snippet.html'
+    });
+
+    $stateProvider.state('snippetEmbed', {
+        url: '/snippet/:snippet_id/embed',
+        controller: 'SnippetViewController',
+        templateUrl: 'partials/snippet-embed.html'
+    });
+
+    $urlRouterProvider.otherwise('/snippet/add');
 
 } ]);
 
