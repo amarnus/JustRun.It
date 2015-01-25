@@ -35,7 +35,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"nodejs": {
 				"deps_grep": "grep -P 'require\\s*\\(' | perl -nle 'print $1 if /require\\s*\\(.(.*?).\\s*\\)/'",
 				"deps_file": "deps",
-				"install_deps": "npm install",
+				"install_deps": "cat deps | xargs -l npm install",
 				"lint_error_regexes": [
 					"error",
 					"undefined method"
