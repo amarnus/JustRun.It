@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"io"
 	"bufio"
+	"regexp"
 	"github.com/gorilla/websocket"
 )
 
@@ -129,6 +130,12 @@ func (c *connection) writer() {
 
 		// Construct JSON from struct
 		b, _ := json.Marshal(&msg)
+		bstr := string(b)
+		match, _ := regexp.MatchString("Error mounting", bstr)
+		if match {
+			bstr = "An error ocurred in the execution context. Please run again later"
+			b = []byte(b)
+		}
 
 		// Write the json object to websocket
 		err := c.ws.WriteMessage(websocket.TextMessage, b)
