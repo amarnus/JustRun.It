@@ -15,6 +15,7 @@ type Snippet struct {
 	Tags         []string      `json:"tags"           bson:"tags"`
 	Code         string        `json:"code"           bson:"code"`
 	Deps         []string      `json:"deps"           bson:"deps"`
+	IsPublic     bool          `json:"is_public"      bson:"is_public"`
 }
 
 func getCollection(db string, collection string) (session *mgo.Session, c *mgo.Collection, err error) {
@@ -87,7 +88,11 @@ func FindSnippetsByTag(snippetTag string) (snippets []Snippet, err error) {
 	snippets = []Snippet{}
 	session, c, _ := getCollection("user_snippets", "snippets")
 	defer session.Close()
-	err = c.Find(bson.M{"tags": snippetTag}).Iter().All(&snippets)
+	if snippetTag != "" {
+		err = c.Find(bson.M{"tags": snippetTag, "is_public": true}).Iter().All(&snippets)
+	} else {
+		err = c.Find(bson.M{"is_public": true}).Iter().All(&snippets)
+	}
 	if err != nil {
 		log.Fatal(err)
 		return
