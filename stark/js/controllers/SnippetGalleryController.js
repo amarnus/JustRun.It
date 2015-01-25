@@ -1,7 +1,21 @@
 'use strict';
 
-angular.module('justRunIt').controller('SnippetGalleryController', [ '$log', function($log) {
+angular.module('justRunIt').controller('SnippetGalleryController', [ '$scope', 'publicSnippets', 'mySnippets',
+    function($scope, publicSnippets, mySnippets) {
 
-    $log.log('SnippetGalleryController has kicked in...');
+        var supportedLanguages = LocalSnippetService.getLanguages();
+
+        for (var i = 0; i < publicSnippets.length; i++) {
+            publicSnippets[i].langInfo = supportedLanguages[publicSnippets[i].language_code];
+        }
+
+        for (var i = 0; i < mySnippets.length; i++) {
+            mySnippets[i].langInfo = supportedLanguages[mySnippets[i].language_code];
+        }
+
+        $scope.publicSnippets = publicSnippets;
+        $scope.publicSnippetsCount = publicSnippets.length;
+        $scope.mySnippets = mySnippets;
+        $scope.mySnippetsCount = mySnippets.length;
 
 } ]);

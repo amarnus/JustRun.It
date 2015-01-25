@@ -1,1 +1,44 @@
-<h1>Snippet Gallery</h1>
+<div layout="column" layout-fill>
+    <md-toolbar class="md-hue-2">
+        <div class="md-toolbar-tools">
+          <h1><span>JustRun.It</span></h1>
+          <span flex></span>
+        </div>
+        <md-button ui-sref="snippetAdd">
+          <i class="fa fa-plus"></i>&nbsp;&nbsp;New snippet
+        </md-button>
+    </md-toolbar>
+    <md-divider></md-divider>
+    <md-tabs>
+        <md-tab label="All Public Snippets ({{ publicSnippetsCount }})">
+            <md-list>
+              <md-item ng-repeat="item in publicSnippets">
+                <md-item-content>
+                  <div class="md-tile-left md-tile-icon" layout="row" layout-align="left center">
+                    <i class="{{ item.langInfo.icon }}"></i>   
+                  </div>
+                  <div class="md-tile-content" layout="row" layout-align="left center">
+                    <h3>{{ item.title }}</h3>
+                  </div>
+                </md-item-content>
+                <md-divider></md-divider>
+              </md-item>
+            </md-list>
+        </md-tab>
+        <md-tab label="My Snippets ({{ mySnippetsCount }})">
+            <md-list>
+              <md-item ng-repeat="item in publicSnippets">
+                <md-item-content>
+                  <div class="md-tile-left md-tile-icon" layout="row" layout-align="left center">
+                    <i class="{{ item.langInfo.icon }}"></i>   
+                  </div>
+                  <div class="md-tile-content" layout="row" layout-align="left center">
+                    <h3>{{ item.title }}</h3>
+                  </div>
+                </md-item-content>
+                <md-divider></md-divider>
+              </md-item>
+            </md-list>
+        </md-tab>
+    </md-tabs>
+</div>
