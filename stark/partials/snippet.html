@@ -30,7 +30,7 @@
             </md-input-container>
         </div>
         <div flex>
-          <md-switch class="md-primary" ng-model="ui.snippet.is_public" aria-label="Is snippet public?"> Public
+          <md-switch class="md-hue-2" ng-model="ui.snippet.is_public" aria-label="Is snippet public?"> <span ng-if="ui.snippet.is_public">Public</span> <span ng-if="!ui.snippet.is_public">Private</span>
           </md-switch>
         </div>
         <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving" ng-show="!ui.state.runOnly">
@@ -39,7 +39,7 @@
         <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
             <i class="fa fa-play"></i><span hide-sm>&nbsp;&nbsp;Run</span>
         </md-button>&nbsp;
-        <md-button ng-click="showDepsDialog()" ng-show="!ui.state.runOnly">
+        <md-button ng-click="showDepsDialog()" ng-show="!ui.state.runOnly && ui.snippet.langInfo.depsInstall">
           <i class="fa fa-check-square-o"></i><span hide-sm>&nbsp;&nbsp;Deps</span>
         </md-button>
         <md-button ng-click="lintSnippet()" ng-show="!ui.state.runOnly">

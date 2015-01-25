@@ -50,7 +50,8 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
                 'php': {
                     name: 'PHP',
                     mimeType: 'application/x-httpd-php-open',
-                    icon: 'devicon-php-plain'
+                    icon: 'devicon-php-plain',
+                    depsInstall: true
                 },
                 'python': {
                     name: 'Python',
