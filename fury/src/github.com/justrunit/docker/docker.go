@@ -143,10 +143,18 @@ func setLanguageContext(dir string, language string) {
 
 	// Language specific configs
 	lc := languageConfigs[language].(map[string]interface{})
+	lcdp := lc["deps_prefix"].([]interface{})
 	cmd := "cat " + code + " | " + lc["deps_grep"].(string)
 
 	// Generate deps
 	deps, _ := exec.Command("bash", "-c", cmd).Output()
+
+	// Add any prefix
+	prefix := ""
+	for _, dp := range lcdp {
+		prefix = prefix + dp.(string) + "\n"
+	}
+	deps = []byte(prefix + string(deps))
 
 	// Write to deps file
 	ioutil.WriteFile(dir + "/" + lc["deps_file"].(string), []byte(deps), 0777)
