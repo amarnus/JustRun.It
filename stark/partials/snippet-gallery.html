@@ -1,1 +1,39 @@
-<h1>Snippet Gallery</h1>
+<div layout="column" layout-fill>
+    <md-toolbar class="md-hue-2">
+        <div class="md-toolbar-tools">
+          <h1><span>JustRun.It</span></h1>
+          <span flex></span>
+        </div>
+    </md-toolbar>
+    <md-divider></md-divider>
+    <md-tabs>
+        <md-tab label="All Public Snippets">
+            <md-list>
+              <md-item ng-repeat="item in publicSnippets">
+                <md-item-content>
+                  <div class="md-tile-left">
+                    {{ item.language_code }}
+                  </div>
+                  <div class="md-tile-content">
+                    <h3>{{ item.title }}</h3>
+                  </div>
+                </md-item-content>
+              </md-item>
+            </md-list>
+        </md-tab>
+        <md-tab label="My Snippets">
+            <md-list>
+              <md-item ng-repeat="item in mySnippets">
+                <md-item-content>
+                  <div class="md-tile-left">
+                    {{ item.language_code }}
+                  </div>
+                  <div class="md-tile-content">
+                    <h3>{{ item.title }}</h3>
+                  </div>
+                </md-item-content>
+              </md-item>
+            </md-list>
+        </md-tab>
+    </md-tabs>
+</div>

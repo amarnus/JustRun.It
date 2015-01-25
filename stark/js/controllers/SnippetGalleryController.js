@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('justRunIt').controller('SnippetGalleryController', [ '$log', function($log) {
+angular.module('justRunIt').controller('SnippetGalleryController', [ 'publicSnippets', 'mySnippets',
+    function(publicSnippets, mySnippets) {
 
-    $log.log('SnippetGalleryController has kicked in...');
+    $scope.publicSnippets = publicSnippets;
+    $scope.mySnippets = mySnippets;
 
 } ]);

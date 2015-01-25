@@ -15,7 +15,15 @@ app.config([ '$stateProvider', '$urlRouterProvider', '$mdThemingProvider',
     $stateProvider.state('snippetGallery', {
         url: '/snippet?tag&me&page',
         controller: 'SnippetGalleryController',
-        templateUrl: 'partials/snippet-gallery.html'
+        templateUrl: 'partials/snippet-gallery.html',
+        resolve: {
+            publicSnippets: [ 'RemoteSnippetService', function(RemoteSnippetService) {
+                return RemoteSnippetService.getSnippets();
+            } ],
+            mySnippets: [ 'RemoteSnippetService', function(RemoteSnippetService) {
+                return RemoteSnippetService.getUserSnippets();
+            } ]
+        }
     });
 
     $stateProvider.state('snippetAdd', {

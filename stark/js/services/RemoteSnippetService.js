@@ -52,6 +52,22 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             return deferred.promise;
         },
 
+        getUserSnippets: function(opts) {
+            var deferred = $q.defer();
+            $http({
+                method: 'GET',
+                url: baseUrl + '/snippets/me',
+                params: opts
+            })
+            .success(function(data) {
+                deferred.resolve(data);
+            })
+            .error(function(data) {
+                deferred.reject(data);
+            });
+            return deferred.promise;
+        },
+
         getSnippet: function(snippetId) {
             var deferred = $q.defer();
             $http({
