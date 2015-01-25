@@ -30,7 +30,7 @@
             </md-input-container>
         </div>
         <div flex></div>
-        <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving">
+        <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving" ng-show="!ui.state.runOnly">
             <i class="fa fa-file-text"></i><span hide-sm>&nbsp;&nbsp;Save</span>
         </md-button>&nbsp;
         <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">

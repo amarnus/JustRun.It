@@ -1,6 +1,10 @@
 <md-dialog class="md-dialog-language-chooser" flex="60" flex-sm="100">
   <md-content>
-    <h1>Pick a language below to get started...</h1>
+    <div layout="row">
+      <h1>Pick a language below to get started...</h1>
+      <div flex></div>
+      <md-progress-circular md-mode="indeterminate" ng-show="ui.shouldProgressBarShow"></md-progress-circular>
+    </div>
     <md-list class="md-list-language-chooser">
       <md-item ng-repeat="(code, l) in languages">
         <md-item-content>

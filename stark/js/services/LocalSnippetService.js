@@ -1,10 +1,19 @@
 'use strict';
 
-angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootScope', function($mdToast, $rootScope) {
+angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootScope', '$cookies',
+    function($mdToast, $rootScope, $cookies) {
 
     var toastPosition = 'top right';
 
     return {
+
+        isCurrentUser: function(sessionId) {
+            if (!$cookies['anonymous_session_id']) {
+                return false;
+            }
+            var currentUserSessionId = $cookies['anonymous_session_id'];
+            return (sessionId === currentUserSessionId);
+        },
 
         showGlobalProgressBar: function() {
             $rootScope.shouldShowGlobalProgressBar = true;

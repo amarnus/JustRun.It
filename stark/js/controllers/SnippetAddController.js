@@ -4,19 +4,29 @@ angular.module('justRunIt').controller('SnippetAddController', [ '$scope', '$log
     'LocalSnippetService', 'RemoteSnippetService', function($scope, $log, $state, $mdToast, LocalSnippetService,
     RemoteSnippetService) {
 
+    $scope.ui = { shouldProgressBarShow: false };
+
     $scope.languages = LocalSnippetService.getSupportedLanguages();
 
     $scope.pickLanguage = function(lang) {
         $log.log('You picked ' + lang + '...');
         var languagePicked = $scope.languages[lang];
-        RemoteSnippetService.createSnippet({ lang: lang })
-            .then(function(response) {
+        $scope.ui.shouldProgressBarShow = true;
+        RemoteSnippetService.createSnippet(lang)
+            .success(function(response) {
+                $scope.ui.shouldProgressBarShow = false;
                 var message = 'Your ' + languagePicked.name + ' snippet has been created.';
                 LocalSnippetService.toast(message);
-                $state.go('snippetEdit', { snippet_id: response._id });
+                $state.go('snippetDetail', { snippet_id: response.result.snippet_id });
             })
-            .catch(function(response) {
-                LocalSnippetService.toastError(response.message);
+            .error(function(response) {
+                $scope.ui.shouldProgressBarShow = false;
+                if (response && response.message) {
+                    LocalSnippetService.toastError(response.message);
+                }
+                else {
+                    LocalSnippetService.toastError('You cannot create a new snippet right now. Please try again later.');
+                }
             });
     };
 

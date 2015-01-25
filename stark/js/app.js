@@ -3,7 +3,8 @@
 var app = angular.module('justRunIt', [
     'ngMaterial',
     'ui.router',
-    'ui.codemirror'
+    'ui.codemirror',
+    'ngCookies'
 ]);
 
 app.config([ '$stateProvider', '$urlRouterProvider', '$mdThemingProvider',
@@ -33,32 +34,10 @@ app.config([ '$stateProvider', '$urlRouterProvider', '$mdThemingProvider',
         } ]
     });
 
-    $stateProvider.state('snippetView', {
-        url: '/snippet/:snippet_id',
+    $stateProvider.state('snippetDetail', {
+        url: '/snippet/:snippet_id?mode',
         controller: 'SnippetController',
         templateUrl: 'partials/snippet.html',
-        resolve: {
-            snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
-                return RemoteSnippetService.getSnippet($stateParams.snippet_id);
-            } ]
-        }
-    });
-
-    $stateProvider.state('snippetEdit', {
-        url: '/snippet/:snippet_id/edit',
-        controller: 'SnippetController',
-        templateUrl: 'partials/snippet.html',
-        resolve: {
-            snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
-                return RemoteSnippetService.getSnippet($stateParams.snippet_id);
-            } ]
-        }
-    });
-
-    $stateProvider.state('snippetEmbed', {
-        url: '/snippet/:snippet_id/embed',
-        controller: 'SnippetController',
-        templateUrl: 'partials/snippet-embed.html',
         resolve: {
             snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
                 return RemoteSnippetService.getSnippet($stateParams.snippet_id);

@@ -4,7 +4,7 @@
 
 //TODO: Write unit-tests for mux request handling with gocheck
 //TODO: Fix Status Codes and Error Messsages according to HTTP Conventions
-
+//TODO: REMOVE `setACLHeaders` BEFORE RELEASING THE APP ON PRODUCTION
 package main
 
 import (
@@ -63,14 +63,21 @@ func main() {
 	//Serves the static folder
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	http.Handle("/", router)
-	log.Println("Potts waiting for Stark at localhost:5000")
-	err := http.ListenAndServe(":5000", router)
+	log.Println("Potts waiting for Stark at localhost:80")
+	err := http.ListenAndServe(":80", router)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
+func setACLHeaders(resp http.ResponseWriter) http.ResponseWriter {
+	resp.Header().Set("Access-Control-Allow-Origin", "*")
+	resp.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT")
+	return resp
+}
+
 func FilterSnippetsByTag(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, _, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	tag := req.FormValue("tag")
 	if !validated {
@@ -87,13 +94,14 @@ func FilterSnippetsByTag(resp http.ResponseWriter, req *http.Request) {
 }
 
 func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
-		"language",
+		"language_code",
 	})
 	if !validated {
 		return
 	}
-	language := body["language"].(string)
+	language := body["language_code"].(string)
 	snippet := models.Snippet{LanguageCode: language}
 	snippetId, ok, err := models.CreateSnippet(&snippet)
 	if err != nil {
@@ -107,6 +115,7 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 
 //TODO: Refactor with anonymous session ids
 func FilterSnippetsByUser(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, _, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	sessionUser := req.FormValue("session_id")
 	if !validated {
@@ -123,6 +132,7 @@ func FilterSnippetsByUser(resp http.ResponseWriter, req *http.Request) {
 }
 
 func FilterSnippetById(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -142,6 +152,7 @@ func FilterSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func UpdateSnippetById(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	routeVariables := mux.Vars(req)
 	snippetId := routeVariables["snippet_id"]
 	decoder := json.NewDecoder(req.Body)
@@ -162,6 +173,7 @@ func UpdateSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -181,6 +193,7 @@ func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func RunSnippetById(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -195,6 +208,7 @@ func RunSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func LintSnippetById(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -209,6 +223,7 @@ func LintSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func InstallDepsById(resp http.ResponseWriter, req *http.Request) {
+	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
