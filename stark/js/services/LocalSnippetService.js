@@ -7,7 +7,7 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
     var sessionKey = 'session_id';
 
     function getUserSessionId() {
-        return !!$cookies[sessionKey];
+        return $cookies[sessionKey];
     }
 
     return {
@@ -16,7 +16,7 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
 
         isCurrentUser: function(sessionId) {
             var currentUserSessionId = getUserSessionId();
-            if (currentUserSessionId) {
+            if (!currentUserSessionId) {
                 return false;
             }
             return (sessionId === currentUserSessionId);
