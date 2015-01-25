@@ -1,6 +1,11 @@
 # JustRun.It
 
-Share and execute code snippets in different programming languages
+Share and execute code snippets in different programming languages. The
+primary motivation for this service was to create a jsbin counterpart for
+server side languages to test out simple code snippets on-the-fly. Just
+paste code, run and share a runnable context with friends without hairy
+setup details of languages. Live streaming of output powered by go channels
+provides a near-terminal experience
 
 ## Terminology
 

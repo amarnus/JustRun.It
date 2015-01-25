@@ -28,7 +28,7 @@ func main() {
 	log.Println("Fury server listening on localhost:8081")
 
 	/* HTTP Handler */
-	err := http.ListenAndServe(":8081", nil)
+	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
 		log.Println(err)
 	}
