@@ -16,6 +16,7 @@ Users are freed from the hassle of setting up a language runtime just for writin
 - Ruby
 - PHP
 - Javascript (NodeJS runtime)
+- Golang
 
 ## Features
 
