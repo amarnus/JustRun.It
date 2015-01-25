@@ -7,23 +7,28 @@ package main
 import (
 	"net/http"
 	"log"
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 	"github.com/justrunit/docker"
+	"github.com/justrunit/furywebsockets"
 )
 
 func main() {
 
 	/* Create router */
-	router := mux.NewRouter()
+	//router := mux.NewRouter()
 
 	/* Add routes */
-	router.HandleFunc("/run", docker.RunSnippet).Methods("POST")
+	http.HandleFunc("/run/complete", docker.RunSnippetSync)
+	http.HandleFunc("/run", docker.RunSnippetAsync)
+	http.HandleFunc("/ws/io", furywebsockets.ServeWs);
 
 	log.Println("Fury server listening on localhost:8081")
 
-	err := http.ListenAndServe(":8081", router)
+	/* HTTP Handler */
+	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		log.Println(err)
 	}
+
 }
 
