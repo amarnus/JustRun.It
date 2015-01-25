@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/justrunit/models"
 	"github.com/justrunit/routeinit"
+	"github.com/justrunit/template"
 	"gopkg.in/boj/redistore.v1"
 	"log"
 	"net/http"
@@ -113,8 +114,10 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 	session.Save(req, resp)
 	resp = setSessionIDAsCookie(resp, session.ID)
 	language := body["language_code"].(string)
-	snippet := models.Snippet{LanguageCode: language, Tags: []string{language}, SessionId: session.ID}
-	snippetId, ok, err := models.CreateSnippet(&snippet)
+	templateSnippet, _ := template.GetTemplateByLanguage(language)
+	templateSnippet.Tags = []string{language}
+	templateSnippet.SessionId = session.ID
+	snippetId, ok, err := models.CreateSnippet(templateSnippet)
 	if err != nil {
 		enc.Encode(routeinit.ApiResponse{ErrorMessage: err.Error(), Status: ok})
 	} else {
