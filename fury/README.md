@@ -19,7 +19,7 @@ Snippet execution manager in all Suit instances
 
 * [`POST /lint/complete`](#post-lintcomplete)
 
-### [Install Deps](#installdeps-1)
+### [Install Deps](#install-deps-1)
 
 * [`POST /install/complete`](#post-installcomplete)
 * [`POST /install`](#post-install)
