@@ -26,7 +26,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             lineNumbers: true,
             mode: snippet.langInfo.mimeType,
             theme: editorTheme,
-            readOnly: !isAuthor ? 'nocursor' : false,
+            readOnly: !isAuthor,
             lineWrapping: true,
             smartIndent: true
         },
@@ -254,7 +254,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     ws.onmessage = function(message) {
         var packet = JSON.parse(message.data);
         console.log(packet);
-        if (packet.data === 'op-complete' || packet.data === 'run-complete') {
+        if ( (packet.data === 'op-complete') || (packet.data === 'run-complete') ) {
             $scope.ui.state.isRunning = false;
             LocalSnippetService.hideGlobalProgressBar();
         }
