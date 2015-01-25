@@ -9,6 +9,9 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     var editorTheme = localStorage.getItem('editorTheme') || 'default';
     var editor;
 
+    // Edit mode or Run-only mode.
+    var isAuthor = true; // LocalSnippetService.isCurrentUser(snippet.session_id)
+
     // Add language info.
     if (snippet.language_code) {
         snippet.langInfo = supportedLanguages[snippet.language_code];
@@ -22,10 +25,11 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         editorConfig: {
             lineNumbers: true,
             mode: snippet.langInfo.mimeType,
-            autofocus: true,
-            theme: editorTheme
+            theme: editorTheme,
+            readOnly: !isAuthor
         },
         state: {
+            runOnly: !isAuthor,
             isSaving: false,
             isRunning: false,
             isForking: false,
@@ -108,13 +112,13 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.ui.state.isForking = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.forkSnippet(snippet._id)
-            .success(function(response) {
+            .then(function(response) {
                 $scope.ui.state.isForking = false;
                 LocalSnippetService.hideGlobalProgressBar();
-                $state.go('snippetEdit', { snippet_id: response._id });
+                $state.go('snippetDetail', { snippet_id: response._id });
                 LocalSnippetService.toast('You have successfully forked a ' + snippet.langInfo.name + ' snippet.');
             })
-            .error(onError);
+            .catch(onError);
     };
 
     $scope.runSnippet = function() {
@@ -128,14 +132,14 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.runSnippet(snippet._id)
-            .success(function(response) {
+            .then(function(response) {
                 $scope.ui.state.isRunning = false;
                 LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
                     onError(response);
                 }
             })
-            .error(onError);
+            .catch(onError);
     };
 
     $scope.saveSnippet = function() {
@@ -194,7 +198,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     Mousetrap.bind([ 'command+s', 'ctrl+s' ], function() {
         $scope.$apply(function() {
-            if (!$scope.ui.state.isSaving) {
+            if (!$scope.ui.state.isSaving && isAuthor) {
                 $scope.saveSnippet();
             }
         });
