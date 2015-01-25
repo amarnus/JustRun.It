@@ -14,7 +14,10 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 		{
 			"python": {
 				"deps_grep": "grep -P '\\s*(?:from|import)' | perl -nle 'print $1 if /(?:import|from)\\s*(\\w+)/'",
-				"deps_file": "requirements.txt"
+				"deps_file": "requirements.txt",
+				"lint_error_regexes": [
+					"invalid syntax"
+				]
 			}
 		}
 	`), &languages)

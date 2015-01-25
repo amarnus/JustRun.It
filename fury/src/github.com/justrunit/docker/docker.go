@@ -11,6 +11,7 @@ import (
 	"os"
 	"io/ioutil"
 	"strings"
+	"regexp"
 	"github.com/justrunit/routeinit"
 	"github.com/justrunit/furyutils"
 	"github.com/justrunit/languages"
@@ -27,9 +28,18 @@ func RunSnippetSync(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// 1. Set the container context
 	sidDetails := setContainerContext(body);
-	results := executeContainer(sidDetails[ "uid" ].(string), sidDetails)
-	enc.Encode(routeinit.ApiResponse{sidDetails[ "msg" ].(string), "", results, sidDetails[ "status" ].(int)})
+
+	// 2. Run the container
+	status := sidDetails[ "status" ].(int)
+	var results []string
+	var fstatus int = status
+	if status == 1 {
+		results, fstatus = executeContainer(sidDetails[ "uid" ].(string), sidDetails, 0)
+	}
+
+	enc.Encode(routeinit.ApiResponse{sidDetails[ "msg" ].(string), "", results, fstatus})
 	return
 }
 
@@ -52,6 +62,31 @@ func RunSnippetAsync(resp http.ResponseWriter, req *http.Request) {
 	} else {
 		enc.Encode(routeinit.ApiResponse{"A " + furywebsockets.SidToOperation[sid] + " operation already running for current session", "", nil, 0})
 	}
+	return
+}
+
+func LintSnippetSync(resp http.ResponseWriter, req *http.Request) {
+	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
+		"language",
+		"uid",
+		"sid",
+		"snippet"})
+	if !validated {
+		return
+	}
+
+	// 1. Set the container context
+	sidDetails := setContainerContext(body);
+
+	// 2. Run the container
+	status := sidDetails[ "status" ].(int)
+	var results []string
+	var fstatus int = status
+	if status == 1 {
+		results, fstatus = executeContainer(sidDetails[ "uid" ].(string), sidDetails, 1)
+	}
+
+	enc.Encode(routeinit.ApiResponse{sidDetails[ "msg" ].(string), "", results, fstatus})
 	return
 }
 
@@ -118,12 +153,48 @@ func setLanguageContext(dir string, language string) {
 }
 
 // Execute container, wait for it to complete, collect output and send
-func executeContainer(uid string, sidDetails map[string]interface{}) (results []string) {
+func executeContainer(uid string, sidDetails map[string]interface{}, isLint int) (results []string, status int) {
+
+	status = 1
+
+	// Get language
+	language := sidDetails["language"].(string)
+
+	// Code dir
 	dir := sidDetails["dir"].(string)
-	output, err := exec.Command("bash", "-c", "docker run -v " +
-		"\"" + dir + ":/home/justrunit/services/myproject\"" +
-		" justrunit/" + sidDetails["language"].(string) ).Output()
-	str := string(output) + err.Error()
+
+	// Docker cmd
+	dockerCmd := "docker run -v " + "\"" + dir + ":/home/justrunit/services/myproject\"" +
+		" justrunit/" + language
+	if isLint == 1 {
+		dockerCmd = dockerCmd + " /bin/bash -c '$LINT_CMD code'"
+	}
+
+	// Docker run
+	dockerRunCmd := exec.Command("bash", "-c", dockerCmd)
+	dockerRunCmdOut, _ := dockerRunCmd.StdoutPipe()
+	dockerRunCmdErr, _ := dockerRunCmd.StderrPipe()
+	dockerRunCmd.Start()
+
+	stdoutBytes, _ := ioutil.ReadAll(dockerRunCmdOut)
+	stderrBytes, _ := ioutil.ReadAll(dockerRunCmdErr)
+
+	str := string(stdoutBytes) + "\nStderr\n" + string(stderrBytes);
+
+	// Check for lint errors
+	if isLint == 1 {
+		languageConfigs := languages.GetLanguageConfigs()
+		lc := languageConfigs[ language ].(map[string]interface{})
+		rs := lc[ "lint_error_regexes" ].([]interface{})
+		for _, regex := range rs {
+			log.Println("Checking for lint error: " + regex.(string))
+			match, _ := regexp.MatchString(regex.(string), str)
+			if match {
+				status = 0
+			}
+		}
+	}
+
 	results = strings.Split(str, "\n")
 	return
 }

@@ -20,6 +20,7 @@ func main() {
 	/* Add routes */
 	http.HandleFunc("/run/complete", docker.RunSnippetSync)
 	http.HandleFunc("/run", docker.RunSnippetAsync)
+	http.HandleFunc("/lint/complete", docker.LintSnippetSync)
 	http.HandleFunc("/ws/io", furywebsockets.ServeWs);
 
 	log.Println("Fury server listening on localhost:8081")
