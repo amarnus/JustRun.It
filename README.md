@@ -1,68 +1,46 @@
 # JustRun.It
 
-Share and execute code snippets in different programming languages. The
-primary motivation for this service was to create a jsbin counterpart for
-server side languages to test out simple code snippets on-the-fly. Just
-paste code, run and share a runnable context with friends without hairy
-setup details of languages. Live streaming of output powered by go channels
-provides a near-terminal experience
+[Site](http://gophergala.justrun.it)
 
-[LIVE URL](http://gophergala.justrun.it/)
+## Motivation
 
-## Terminology
+JustRun.It is a web application that allows users to write, run and share code snippets in any language* from a web browser A.K.A JSBin for server-side programming languages.
 
-`Snippet` - A short piece of code in a programming language 
+Users are freed from the hassle of setting up a language runtime just for writing a short block of code in it. Developers can now share code along with its runnable execution context with their peers.
 
-`run` - Run the code snippet 
-
-`lint` - Lint check the code snippet 
-
-`install` - Install module dependencies used by the code snippet for the current execution
-context. Not saved across sessions
-
-## Supported Languages
+## Supported Programming Languages
 
 - Python
 - Ruby
 - PHP
-- Node.js
+- Javascript (NodeJS runtime)
 
 ## Features
 
-- Share code snippets by URL
-- Private snippets
-- Execute snippets live
-- Automatic dependency install for all languages except PHP
-- STDOUT/STDERR streamed to the browser
-- Language-specific Syntax Highlighting
-- Editor feature: Ability to change theme
-- PHP deps UI
-- Forking
-- Linting code snippet
+- Docker-powered Isolated execution environments for all snippet runs.
+- Allow users to author snippets in a editor that supports Syntax Highlighting.
+- Terminal Emulator which pipes the running snippet's STDOUT/STDERR streams to the browser. 
+- Ability to *run* snippets and see the results, as they arrive, on the terminal. 
+- Automatic dependency detection and installation for Python, Ruby and NodeJS snippets.
+- Allow users to manually list their dependencies for PHP snippets.
+- Allow users to fork other users' snippets as a starting point for their own.
+- Allow users to see lint their snippets.
+- Allow users to change the editor theme and persist the change across sessions.
 
 ## Architecture
 
-This web service has 3 main components
+JustRun.It is composed of three main components:
 
-### Potts
+### [Potts](https://github.com/gophergala/JustRun.It/tree/master/potts)
 
-REST Server written in Go to serve snippets and schedule execution
+Potts is a REST Server written in Go that manages JustRun.It snippets and their metadata.
 
-[Code](https://github.com/gophergala/JustRun.It/tree/master/potts)
+### [Fury](https://github.com/gophergala/JustRun.It/tree/master/fury)
 
-### Fury
+Fury is a REST Server written in Go that executes JustRun.It snippets in Docker containers.
 
-REST Server written in Go to execute snippets in isolated docker environments.
+It uses Go channels extensively to pipe the STDOUT/STDERR stream of the running snippet to the user's browser via WebSockets.
 
-Uses Go channels extensively to route STDOUT/STDERR from different snippet
-executions to the appropriate websocket connection
+### [Stark](https://github.com/gophergala/JustRun.It/tree/master/stark)
 
-[API Reference](https://github.com/gophergala/JustRun.It/tree/master/fury)
-
-### Stark
-
-Web application written in AngularJS featuring snippet editor, real time 
-output streaming, lint checking and forking among many other features
-
-[code](https://github.com/gophergala/JustRun.It/tree/master/stark)
-
+Stark is a AngularJS-powered client application.
