@@ -77,11 +77,12 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             return deferred.promise;
         },
 
-        runSnippet: function(snippetId, code) {
+        runSnippet: function(language, snippetId, code) {
             return $http({
                 method: 'POST',
                 url: baseUrl + '/run',
                 data: {
+                    language: language,
                     uid: snippetId,
                     sid: LocalSnippetService.getUserSessionId() || 'foo', // TODO: Remove this.
                     snippet: code
