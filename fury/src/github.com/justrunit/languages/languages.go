@@ -15,6 +15,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"python": {
 				"deps_grep": "grep -P '\\s*(?:from|import)' | perl -nle 'print $1 if /(?:import|from)\\s*([\\w\\-]+)/'",
 				"deps_file": "requirements.txt",
+				"install_deps": "virtualenv env && pip install -r requirements.txt",
 				"lint_error_regexes": [
 					"invalid syntax"
 				]
@@ -36,6 +37,13 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 				"lint_error_regexes": [
 					"error",
 					"undefined method"
+				]
+			},
+			"php": {
+				"deps_grep": "nodepsgrep",
+				"deps_file": "composer.json",
+				"lint_error_regexes": [
+					"Errors parsing"
 				]
 			}
 		}

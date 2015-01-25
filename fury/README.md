@@ -19,6 +19,11 @@ Snippet execution manager in all Suit instances
 
 * [`POST /lint/complete`](#post-lintcomplete)
 
+### [Install Deps](#installdeps-1)
+
+* [`POST /install/complete`](#post-installcomplete)
+* [`POST /install`](#post-install)
+
 ### [Websocket](#websocket-1)
 
 * [`ws /ws/io`](#ws-wsio)
@@ -139,6 +144,90 @@ Lint check a snippet, wait for it to complete, and collect output from STDOUT an
       "function subtract(number1, number2) {",
       "                 ^ ",
    ]
+}
+```
+
+### Install Deps
+
+#### POST /install/complete
+
+Lint check a snippet, wait for it to complete, and collect output from STDOUT and STDERR
+
+##### input parameters
+
+`language` - **string** - A language supported by JustRunIt
+
+`uid` - **string** - UID of the script to execute 
+
+`sid` - **string** - Session ID of the execution 
+
+`snippet` - **string** - Code snippet to execute 
+
+`deps` - **string** - Dependency manager file contents for the language
+
+##### example request
+
+	$ curl -H "Content-Type: application/json" -X POST -d \
+            '{
+               "language": "python",
+               "uid": "python_uid_23432adfs2",
+               "sid": "python_session_254fdagt",
+               "snippet": "import json\n\tprint \"random\""
+             }' http://localhost:3000/install/complete | json_xs
+
+##### example output
+
+```javascript
+{  
+   "result" : [
+      "New python executable in env/bin/python2",
+      "Not overwriting existing python script env/bin/python (you must use env/bin/python2)",
+      "Installing setuptools, pip...done.",
+      "Running virtualenv with interpreter /usr/bin/python2",
+      "Downloading/unpacking json (from -r requirements.txt (line 1))",
+      "  Could not find any downloads that satisfy the requirement json (from -r requirements.txt (line 1))",
+      "Cleaning up...",
+      "No distributions at all found for json (from -r requirements.txt (line 1))",
+      "Storing debug log for failure in /home/justrunit/.pip/pip.log",
+      "",
+      "Stderr",
+      ""
+   ],
+   "status" : 1
+}
+```
+
+#### POST /install
+
+Install deps of a snippet and pipe all its output to STDOUT/STDERR to a websocket requesting the same session id 
+
+##### input parameters
+
+`language` - **string** - A language supported by JustRunIt
+
+`uid` - **string** - UID of the script to execute 
+
+`sid` - **string** - Session ID of the execution 
+
+`snippet` - **string** - Code snippet to execute 
+
+`deps` - **string** - Deps manager contents
+
+##### example request
+
+	$ curl -H "Content-Type: application/json" -X POST -d \
+            '{
+               "language": "python",
+               "uid": "python_uid_23432adfs2",
+               "sid": "python_session_254fdagt",
+               "snippet": "import json\n\tprint \"random\""
+             }' http://localhost:3000/run | json_xs
+
+##### example output
+
+```javascript
+{
+   "status" : 1,
 }
 ```
 

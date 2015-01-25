@@ -30,6 +30,7 @@ func RunSnippetSync(resp http.ResponseWriter, req *http.Request) {
 
 	// 1. Set the container context
 	sidDetails := setContainerContext(body);
+	sidDetails[ "op" ] = "run"
 
 	// 2. Run the container
 	status := sidDetails[ "status" ].(int)
@@ -56,12 +57,62 @@ func RunSnippetAsync(resp http.ResponseWriter, req *http.Request) {
 	sid := body["sid"].(string)
 	if furywebsockets.SidToOperation[ sid ] == "" {
 		sidDetails := setContainerContext(body);
+		sidDetails[ "op" ] = "run"
 		executeContainerAsync(sidDetails)
 		furywebsockets.SidToOperation[sid] = "run"
 		enc.Encode(routeinit.ApiResponse{sidDetails[ "msg" ].(string), "", nil, sidDetails[ "status" ].(int)})
 	} else {
 		enc.Encode(routeinit.ApiResponse{"A " + furywebsockets.SidToOperation[sid] + " operation already running for current session", "", nil, 0})
 	}
+	return
+}
+
+func InstallDepsAsync(resp http.ResponseWriter, req *http.Request) {
+	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
+		"language",
+		"uid",
+		"sid",
+		"snippet"})
+	if !validated {
+		return
+	}
+
+	sid := body["sid"].(string)
+	if furywebsockets.SidToOperation[ sid ] == "" {
+		sidDetails := setContainerContext(body);
+		sidDetails[ "op" ] = "install-deps"
+		executeContainerAsync(sidDetails)
+		furywebsockets.SidToOperation[sid] = "install-deps"
+		enc.Encode(routeinit.ApiResponse{sidDetails[ "msg" ].(string), "", nil, sidDetails[ "status" ].(int)})
+	} else {
+		enc.Encode(routeinit.ApiResponse{"A " + furywebsockets.SidToOperation[sid] + " operation already running for current session", "", nil, 0})
+	}
+	return
+}
+
+func InstallDepsSync(resp http.ResponseWriter, req *http.Request) {
+	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
+		"language",
+		"uid",
+		"sid",
+		"snippet"})
+	if !validated {
+		return
+	}
+
+	// 1. Set the container context
+	sidDetails := setContainerContext(body);
+	sidDetails[ "op" ] = "install-deps"
+
+	// 2. Run the container
+	status := sidDetails[ "status" ].(int)
+	var results []string
+	var fstatus int = status
+	if status == 1 {
+		results, fstatus = executeContainer(sidDetails[ "uid" ].(string), sidDetails, 0)
+	}
+
+	enc.Encode(routeinit.ApiResponse{sidDetails[ "msg" ].(string), "", results, fstatus})
 	return
 }
 
@@ -77,6 +128,7 @@ func LintSnippetSync(resp http.ResponseWriter, req *http.Request) {
 
 	// 1. Set the container context
 	sidDetails := setContainerContext(body);
+	sidDetails[ "op" ] = "lint"
 
 	// 2. Run the container
 	status := sidDetails[ "status" ].(int)
@@ -118,13 +170,14 @@ func setContainerContext(body map[string]interface{}) (sidDetails map[string]int
 	}
 
 	// 3. Set language context
-	setLanguageContext(dir, body["language"].(string))
+	lc := setLanguageContext(dir, body["language"].(string), sidDetails[ "deps" ])
 
 	// Stash container details to create later on websocket initiation
 	body[ "dir" ] = dir
 	sidDetails = body
 	sidDetails[ "msg" ] = msg
 	sidDetails[ "uid" ] = uid
+	sidDetails[ "install_deps" ] = lc[ "install_deps" ].(string)
 	sidDetails[ "status" ] = status
 
 	status = 1
@@ -132,7 +185,7 @@ func setContainerContext(body map[string]interface{}) (sidDetails map[string]int
 }
 
 /* Set language context like dependency files/folder initializations */
-func setLanguageContext(dir string, language string) {
+func setLanguageContext(dir string, language string, depsInput interface{}) (lc map[string]interface{}) {
 
 	// Read config file for languages
 	languageConfigs := languages.GetLanguageConfigs()
@@ -142,24 +195,32 @@ func setLanguageContext(dir string, language string) {
 	code := dir + "/code"
 
 	// Language specific configs
-	lc := languageConfigs[language].(map[string]interface{})
-	cmd := "cat " + code + " | " + lc["deps_grep"].(string)
+	lc = languageConfigs[language].(map[string]interface{})
 
 	// Generate deps
-	deps, _ := exec.Command("bash", "-c", cmd).Output()
+	deps := []byte("")
+	if depsInput == nil {
+		cmd := "cat " + code + " | " + lc["deps_grep"].(string)
 
-	// Add any prefix
-	if lc["deps_prefix"] != nil {
-		lcdp := lc["deps_prefix"].([]interface{})
-		prefix := ""
-		for _, dp := range lcdp {
-			prefix = prefix + dp.(string) + "\n"
+		// Generate deps
+		deps, _ = exec.Command("bash", "-c", cmd).Output()
+
+		// Add any prefix
+		if lc["deps_prefix"] != nil {
+			lcdp := lc["deps_prefix"].([]interface{})
+			prefix := ""
+			for _, dp := range lcdp {
+				prefix = prefix + dp.(string) + "\n"
+			}
+			deps = []byte(prefix + string(deps))
 		}
-		deps = []byte(prefix + string(deps))
+	} else {
+		deps = depsInput.([]byte)
 	}
 
 	// Write to deps file
 	ioutil.WriteFile(dir + "/" + lc["deps_file"].(string), []byte(deps), 0777)
+	return
 }
 
 // Execute container, wait for it to complete, collect output and send
@@ -178,6 +239,9 @@ func executeContainer(uid string, sidDetails map[string]interface{}, isLint int)
 		" justrunit/" + language
 	if isLint == 1 {
 		dockerCmd = dockerCmd + " /bin/bash -c '$LINT_CMD code'"
+	}
+	if sidDetails[ "op" ] == "install-deps" {
+		dockerCmd = dockerCmd + " /bin/bash -c '" + sidDetails["install_deps"].(string) + "'"
 	}
 
 	// Docker run
@@ -211,13 +275,30 @@ func executeContainer(uid string, sidDetails map[string]interface{}, isLint int)
 
 // Execute container, start it, wire up output to a channel
 func executeContainerAsync(sidDetails map[string]interface{}) {
+
+	// Parse language
+	language := sidDetails[ "language" ].(string)
+
+	// Code dir
 	dir := sidDetails["dir"].(string)
-	dockerRunCmd := exec.Command("bash", "-c", "docker run -v " +
+
+	// Docker cmd
+	dockerCmd := "docker run -v " +
 		"\"" + dir + ":/home/justrunit/services/myproject\"" +
-		" justrunit/" + sidDetails["language"].(string) )
+		" justrunit/" + language
+	if sidDetails[ "op" ] == "install-deps" {
+		dockerCmd = dockerCmd + " /bin/bash -c '" + sidDetails["install_deps"].(string) + "'"
+	}
+	dockerRunCmd := exec.Command("bash", "-c", dockerCmd )
+
+	// Retrieve Output pipe handlers
 	dockerRunCmdOut, _ := dockerRunCmd.StdoutPipe()
 	dockerRunCmdErr, _ := dockerRunCmd.StderrPipe()
+
+	// Start the snippet execution
 	dockerRunCmd.Start()
+
+	// Pipe the IO Readers to channels feeding the websockets
 	furywebsockets.ReaderToChannel(sidDetails[ "sid" ].(string),
 		dockerRunCmdOut,
 		dockerRunCmdErr);

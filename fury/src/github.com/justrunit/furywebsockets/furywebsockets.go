@@ -74,6 +74,9 @@ func ReaderToChannel(sid string, sout io.Reader, serr io.Reader) {
 		}
 		numListeners--;
 		if numListeners == 0 {
+			iohub <- websocketmessage{
+				Id: sid,
+				Data: "op-complete"}
 			delete( SidToOperation, sid )
 		}
 	}
