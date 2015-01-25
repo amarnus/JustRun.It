@@ -26,7 +26,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             lineNumbers: true,
             mode: snippet.langInfo.mimeType,
             theme: editorTheme,
-            readOnly: !isAuthor ? 'nocursor' : false,
+            readOnly: !isAuthor,
             lineWrapping: true,
             smartIndent: true
         },
@@ -233,9 +233,12 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
                 if (!response.status) {
                     onError(response);
                 }
-                response.result.forEach(function(line) {
-                    term.write(line);
-                });
+                else {
+                    LocalSnippetService.toast('Your code looks good.');
+                    response.result.forEach(function(line) {
+                        term.write(line);
+                    });
+                }
             })
             .error(onError);
     };
@@ -253,16 +256,24 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     ws.onmessage = function(message) {
         var packet = JSON.parse(message.data);
-        console.log(packet);
-        if (packet.data === 'op-complete' || packet.data === 'run-complete') {
-            $scope.ui.state.isRunning = false;
-            LocalSnippetService.hideGlobalProgressBar();
+        if ( (packet.data === 'op-complete') || (packet.data === 'run-complete') ) {
+            $scope.$apply(function() {
+                $scope.ui.state.isRunning = false;
+                LocalSnippetService.hideGlobalProgressBar();
+                LocalSnippetService.toast('Your snippet run has ended.');
+            });
         }
         else if (packet.data === 'deps-complete') {
-            $scope.ui.state.isInstalling = false;
+            $scope.$apply(function() {
+                $scope.ui.state.isInstalling = false;
+                LocalSnippetService.hideGlobalProgressBar();
+                LocalSnippetService.toast('Your snippet dependencies have been installed.');
+            });
         }
         else {
-          term.write(packet.data + '\r\n');
+            $scope.$apply(function() {
+                term.write(packet.data + '\r\n');
+            });
         }
     };
 
