@@ -107,7 +107,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     $scope.showDepsDialog = function() {
         $mdDialog.show({
-            controller: [ '$iScope', function($iScope) {
+            controller: [ '$scope', function($iScope) {
                 $iScope.deps = null;
                 $iScope.installDeps = function() {
                     installDeps($iScope.deps);
@@ -178,7 +178,6 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         LocalSnippetService.showGlobalProgressBar();    
         RemoteSnippetService.runSnippet(snippet.language_code, snippet._id, $scope.ui.snippet.code)
             .success(function(response) {
-                LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
                     onError(response);
                 }
@@ -254,8 +253,10 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     ws.onmessage = function(message) {
         var packet = JSON.parse(message.data);
+        console.log(packet);
         if (packet.data === 'op-complete' || packet.data === 'run-complete') {
             $scope.ui.state.isRunning = false;
+            LocalSnippetService.hideGlobalProgressBar();
         }
         else if (packet.data === 'deps-complete') {
             $scope.ui.state.isInstalling = false;

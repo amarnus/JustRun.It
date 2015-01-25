@@ -129,7 +129,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             });
         },
 
-        lintSnippet: function() {
+        lintSnippet: function(language, snippetId, code) {
             var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
             if (language === 'javascript') {
                 language = 'nodejs';
