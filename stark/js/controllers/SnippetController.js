@@ -132,7 +132,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();
-        RemoteSnippetService.runSnippet(snippet.langInfo.name, snippet._id, $scope.ui.snippet.code)
+        RemoteSnippetService.runSnippet(snippet.language_code, snippet._id, $scope.ui.snippet.code)
             .success(function(response) {
                 $scope.ui.state.isRunning = false;
                 LocalSnippetService.hideGlobalProgressBar();

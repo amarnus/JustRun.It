@@ -78,6 +78,9 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
         },
 
         runSnippet: function(language, snippetId, code) {
+            if (language === 'javascript') {
+                language = 'nodejs';
+            }
             return $http({
                 method: 'POST',
                 url: baseUrl + '/run',
