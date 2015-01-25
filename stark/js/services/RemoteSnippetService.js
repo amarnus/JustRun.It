@@ -44,7 +44,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 params: opts
             })
             .success(function(data) {
-                deferred.resolve(data);
+                deferred.resolve(data.result.snippets);
             })
             .error(function(data) {
                 deferred.reject(data);
@@ -60,7 +60,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 params: opts
             })
             .success(function(data) {
-                deferred.resolve(data);
+                deferred.resolve(data.result.snippets);
             })
             .error(function(data) {
                 deferred.reject(data);
