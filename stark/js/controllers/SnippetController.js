@@ -253,16 +253,21 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     ws.onmessage = function(message) {
         var packet = JSON.parse(message.data);
-        console.log(packet);
         if ( (packet.data === 'op-complete') || (packet.data === 'run-complete') ) {
-            $scope.ui.state.isRunning = false;
-            LocalSnippetService.hideGlobalProgressBar();
+            $scope.$apply(function() {
+                $scope.ui.state.isRunning = false;
+                LocalSnippetService.hideGlobalProgressBar();
+            });
         }
         else if (packet.data === 'deps-complete') {
-            $scope.ui.state.isInstalling = false;
+            $scope.$apply(function() {
+                $scope.ui.state.isInstalling = false;
+            });
         }
         else {
-          term.write(packet.data + '\r\n');
+            $scope.$apply(function() {
+                term.write(packet.data + '\r\n');
+            });
         }
     };
 
