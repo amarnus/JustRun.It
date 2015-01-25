@@ -4,6 +4,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
     function($http, $q, $timeout, $log, LocalSnippetService) {
 
     var baseUrl = 'http://gophergala.justrun.it';
+    
     var ws = new ReconnectingWebSocket( 'ws://gophergala.justrun.it/ws/io' );
 
     ws.onopen = function() {
@@ -78,13 +79,10 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
         },
 
         forkSnippet: function(snippetId) {
-            var deferred = $q.defer();
-            $timeout(function() {
-                deferred.resolve({
-                    _id: 'bar'
-                });
-            }, 4000);
-            return deferred.promise;
+            return $http({
+                method: 'POST',
+                url: baseUrl + '/snippet/' + snippetId + '/fork'
+            });
         },
 
         runSnippet: function(language, snippetId, code) {
@@ -109,10 +107,43 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             });
         },
 
-        lintSnippet: function() {
-            var deferred = $q.defer();
-            deferred.resolve({ status: 1, messages: [] });
-            return deferred.promise;
+        installDeps: function(language, snippetId, code) {
+            var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
+            if (language === 'javascript') {
+                language = 'nodejs';
+            }
+            if (ws) {
+                ws.send(JSON.stringify({
+                    id: sessionId
+                }));
+            }
+            return $http({
+                method: 'POST',
+                url: baseUrl + '/install/deps',
+                data: {
+                    language: language,
+                    uid: snippetId,
+                    sid: sessionId,
+                    snippet: code
+                } 
+            });
+        },
+
+        lintSnippet: function(language, snippetId, code) {
+            var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
+            if (language === 'javascript') {
+                language = 'nodejs';
+            }
+            return $http({
+                method: 'POST',
+                url: baseUrl + '/lint/complete',
+                data: {
+                    language: language,
+                    uid: snippetId,
+                    sid: sessionId,
+                    snippet: code
+                } 
+            });
         }
 
     };

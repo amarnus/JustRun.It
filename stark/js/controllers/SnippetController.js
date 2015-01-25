@@ -35,7 +35,8 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             isSaving: false,
             isRunning: false,
             isForking: false,
-            isLinting: false
+            isLinting: false,
+            isInstalling: false
         }
     };
 
@@ -48,6 +49,30 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         var editorHeight = getContentHeight();
         editor.setSize('100%', 0.9 * editorHeight);
     }
+
+    function installDeps(deps) {
+        
+        function onError(response) {
+            $scope.ui.state.isInstalling = false;
+            LocalSnippetService.hideGlobalProgressBar();
+            if (response.message) {
+              LocalSnippetService.toastError(response.message);
+            }
+        }
+
+        deps = deps || [];
+        term.eraseInDisplay([ 2 ]);
+        $scope.ui.state.isInstalling = true;
+        LocalSnippetService.showGlobalProgressBar();    
+        RemoteSnippetService.installDeps(snippet._id, deps)
+            .success(function(response) {
+                LocalSnippetService.hideGlobalProgressBar();
+                if (!response.status) {
+                    onError(response);
+                }
+            })
+            .error(onError);
+    };
 
     $scope.onEditorLoad = function(instance) {
         editor = instance;
@@ -80,6 +105,18 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         });
     };
 
+    $scope.showDepsDialog = function() {
+        $mdDialog.show({
+            controller: [ '$scope', function($iScope) {
+                $iScope.deps = null;
+                $iScope.installDeps = function() {
+                    installDeps($iScope.deps);
+                }
+            } ],
+            templateUrl: 'partials/deps-browser.html'
+        })
+    };
+
     $scope.tagSnippet = function() {
         $mdDialog.show({
             controller: [ '$scope', function($scope) {
@@ -109,19 +146,21 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         function onError(response) {
             $scope.ui.state.isForking = false;
             LocalSnippetService.hideGlobalProgressBar();
-            LocalSnippetService.toastError(response.message);
+            if (response.message) {
+              LocalSnippetService.toastError(response.message);
+            }
         }
 
         $scope.ui.state.isForking = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.forkSnippet(snippet._id)
-            .then(function(response) {
+            .success(function(response) {
                 $scope.ui.state.isForking = false;
                 LocalSnippetService.hideGlobalProgressBar();
-                $state.go('snippetDetail', { snippet_id: response._id });
+                $state.go('snippetDetail', { snippet_id: response.result.snippet_id });
                 LocalSnippetService.toast('You have successfully forked a ' + snippet.langInfo.name + ' snippet.');
             })
-            .catch(onError);
+            .error(onError);
     };
 
     $scope.runSnippet = function() {
@@ -129,15 +168,16 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         function onError(response) {
             $scope.ui.state.isRunning = false;
             LocalSnippetService.hideGlobalProgressBar();
-            LocalSnippetService.toastError(response.message);
+            if (response.message) {
+              LocalSnippetService.toastError(response.message);
+            }
         }
 
+        term.eraseInDisplay([ 2 ]);
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();    
         RemoteSnippetService.runSnippet(snippet.language_code, snippet._id, $scope.ui.snippet.code)
             .success(function(response) {
-                $scope.ui.state.isRunning = false;
-                LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
                     onError(response);
                 }
@@ -150,7 +190,9 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         function onError(response) {
             $scope.ui.state.isSaving = false;
             LocalSnippetService.hideGlobalProgressBar();
-            LocalSnippetService.toastError(response.message);
+            if (response.message) {
+              LocalSnippetService.toastError(response.message);
+            }
         }
 
         $scope.ui.state.isSaving = true;
@@ -170,10 +212,38 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             .error(onError);
     };
 
+
+    $scope.lintSnippet = function() {
+
+        function onError(response) {
+            $scope.ui.state.isLinting = false;
+            LocalSnippetService.hideGlobalProgressBar();
+            if (response.message) {
+              LocalSnippetService.toastError(response.message);
+            }
+        }
+
+        term.eraseInDisplay([ 2 ]);
+        $scope.ui.state.isLinting = true;
+        LocalSnippetService.showGlobalProgressBar();
+        RemoteSnippetService.lintSnippet(snippet.language_code, snippet._id, $scope.ui.snippet.code)
+            .success(function(response) {
+                $scope.ui.state.isLinting = false;
+                LocalSnippetService.hideGlobalProgressBar();
+                if (!response.status) {
+                    onError(response);
+                }
+                response.result.forEach(function(line) {
+                    term.write(line);
+                });
+            })
+            .error(onError);
+    };
+
     var contentHeight = 0.9 * getContentHeight();
     var term = new Terminal({
       rows: Math.floor(contentHeight / 14),
-      cols: 80,
+      cols: 90,
       screenKeys: true,
       cursorBlink: true 
     });
@@ -183,7 +253,17 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     ws.onmessage = function(message) {
         var packet = JSON.parse(message.data);
-        term.write(packet.data + '\r\n');
+        console.log(packet);
+        if (packet.data === 'op-complete' || packet.data === 'run-complete') {
+            $scope.ui.state.isRunning = false;
+            LocalSnippetService.hideGlobalProgressBar();
+        }
+        else if (packet.data === 'deps-complete') {
+            $scope.ui.state.isInstalling = false;
+        }
+        else {
+          term.write(packet.data + '\r\n');
+        }
     };
 
     Mousetrap.bind([ 'command+s', 'ctrl+s' ], function() {
