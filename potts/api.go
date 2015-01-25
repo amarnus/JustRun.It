@@ -60,6 +60,9 @@ func main() {
 	//DELETE /snippet/<snippet_id> - Remove a snippet
 	router.HandleFunc("/snippet/{snippet_id}", DeleteSnippetById).
 		Methods("DELETE")
+	//POST /snippet/<snippet_id>/fork - Forks an existing snippe.t
+	router.HandleFunc("/snippet/{snippet_id}/fork", ForkSnippetById).
+		Methods("POST")
 
 	//Serves the static folder
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
@@ -196,6 +199,25 @@ func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
 		enc.Encode(routeinit.ApiResponse{ErrorMessage: err.Error(), Status: false})
 	} else {
 		enc.Encode(routeinit.ApiResponse{Status: true})
+	}
+	return
+}
+
+func ForkSnippetById(resp http.ResponseWriter, req *http.Request) {
+	routeVariables := mux.Vars(req)
+	snippetId := routeVariables["snippet_id"]
+	session, _ := globalStore.Get(req, "session-name")
+	session.Save(req, resp)
+	resp = setSessionIDAsCookie(resp, session.ID)
+	snippet, err := models.FindSnippetById(snippetId)
+	snippet.SessionId = session.ID
+	newSnippetId, ok, err := models.CreateSnippet(snippet)
+	enc := json.NewEncoder(resp)
+	if err != nil {
+		enc.Encode(routeinit.ApiResponse{ErrorMessage: err.Error(), Status: ok})
+	} else {
+		ResponseResult := SnippetCreationResponse{newSnippetId}
+		enc.Encode(routeinit.ApiResponse{Result: &ResponseResult, Status: ok})
 	}
 	return
 }
