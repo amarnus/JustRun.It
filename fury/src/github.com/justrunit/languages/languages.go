@@ -44,7 +44,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"php": {
 				"deps_grep": "nodepsgrep",
 				"deps_file": "composer.json",
-				"install_deps": "if [ -s \"composer.json\" ]; then composer install; fi;",
+				"install_deps": "if [ -s \"composer.json\" ]; then composer install --verbose; fi;",
 				"lint_error_regexes": [
 					"Errors parsing"
 				]
