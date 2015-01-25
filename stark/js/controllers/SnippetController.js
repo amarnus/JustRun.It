@@ -115,13 +115,13 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.ui.state.isForking = true;
         LocalSnippetService.showGlobalProgressBar();
         RemoteSnippetService.forkSnippet(snippet._id)
-            .then(function(response) {
+            .success(function(response) {
                 $scope.ui.state.isForking = false;
                 LocalSnippetService.hideGlobalProgressBar();
                 $state.go('snippetDetail', { snippet_id: response._id });
                 LocalSnippetService.toast('You have successfully forked a ' + snippet.langInfo.name + ' snippet.');
             })
-            .catch(onError);
+            .error(onError);
     };
 
     $scope.runSnippet = function() {
@@ -132,6 +132,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             LocalSnippetService.toastError(response.message);
         }
 
+        term.eraseInDisplay([ 2 ]);
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();    
         RemoteSnippetService.runSnippet(snippet.language_code, snippet._id, $scope.ui.snippet.code)
@@ -173,7 +174,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     var contentHeight = 0.9 * getContentHeight();
     var term = new Terminal({
       rows: Math.floor(contentHeight / 14),
-      cols: 80,
+      cols: 90,
       screenKeys: true,
       cursorBlink: true 
     });
