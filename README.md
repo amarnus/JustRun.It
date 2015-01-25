@@ -7,6 +7,8 @@ paste code, run and share a runnable context with friends without hairy
 setup details of languages. Live streaming of output powered by go channels
 provides a near-terminal experience
 
+[LIVE URL](http://gophergala.justrun.it/)
+
 ## Terminology
 
 `Snippet` - A short piece of code in a programming language 
