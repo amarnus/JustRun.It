@@ -233,9 +233,12 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
                 if (!response.status) {
                     onError(response);
                 }
-                response.result.forEach(function(line) {
-                    term.write(line);
-                });
+                else {
+                    LocalSnippetService.toast('Your code looks good.');
+                    response.result.forEach(function(line) {
+                        term.write(line);
+                    });
+                }
             })
             .error(onError);
     };
