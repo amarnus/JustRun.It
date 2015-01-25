@@ -132,15 +132,15 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
         $scope.ui.state.isRunning = true;
         LocalSnippetService.showGlobalProgressBar();
-        RemoteSnippetService.runSnippet(snippet._id)
-            .then(function(response) {
+        RemoteSnippetService.runSnippet(snippet._id, $scope.ui.snippet.code)
+            .success(function(response) {
                 $scope.ui.state.isRunning = false;
                 LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
                     onError(response);
                 }
             })
-            .catch(onError);
+            .error(onError);
     };
 
     $scope.saveSnippet = function() {
@@ -176,6 +176,26 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
       cursorBlink: true 
     });
     term.open(document.getElementById('terminal'));
+
+    var ws = new WebSocket( 'ws://gophergala.justrun.it/ws/io' );
+
+    ws.onopen = function() {
+        $log.debug('WebSocket connection was initiated successfully...');
+    };
+
+    ws.onmessage = function(message) {
+        $log.log(message);
+        // Write to the terminal here...
+    };
+
+    ws.onclose = function() {
+        $log.debug('WebSocket connection was closed...');
+    };
+
+    ws.onerror = function(error) {
+        $log.error('Error with the WebSocket connection...');
+        $log.error(error);
+    };
 
     // var socket = io.connect();
     // socket.on('connect', function() {

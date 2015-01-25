@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$timeout',
-    function($http, $q, $timeout) {
+angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$timeout', 'LocalSnippetService',
+    function($http, $q, $timeout, LocalSnippetService) {
 
     var baseUrl = 'http://gophergala.justrun.it';
 
@@ -77,10 +77,16 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             return deferred.promise;
         },
 
-        runSnippet: function(snippetId) {
-            var deferred = $q.defer();
-            deferred.resolve({ status: 0, message: 'Your snippet cannot be run now as our backend isn\'t ready yet' });
-            return deferred.promise;
+        runSnippet: function(snippetId, code) {
+            return $http({
+                method: 'POST',
+                url: baseUrl + '/run',
+                data: {
+                    uid: snippetId,
+                    sid: LocalSnippetService.getUserSessionId() || 'foo', // TODO: Remove this.
+                    snippet: code
+                } 
+            });
         },
 
         lintSnippet: function() {

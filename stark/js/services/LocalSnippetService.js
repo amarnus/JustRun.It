@@ -4,14 +4,19 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
     function($mdToast, $rootScope, $cookies) {
 
     var toastPosition = 'top right';
+    var sessionKey = 'anonymous_session_id';
 
     return {
 
+        getUserSessionId: function() {
+            return !!$cookies[sessionKey];
+        },
+
         isCurrentUser: function(sessionId) {
-            if (!$cookies['anonymous_session_id']) {
+            var currentUserSessionId = getUserSessionId();
+            if (currentUserSessionId) {
                 return false;
             }
-            var currentUserSessionId = $cookies['anonymous_session_id'];
             return (sessionId === currentUserSessionId);
         },
 
@@ -63,13 +68,13 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
                 'go': {
                     name: 'Go',
                     mimeType: 'text/x-go',
-                    icon: 'fa fa-code'
+                    icon: 'fa fa-code' // TODO: Find a better icon for this guy.
                 },
-                'clojure': {
-                    name: 'Clojure',
-                    mimeType: 'text/x-clojure',
-                    icon: 'fa fa-code'
-                }
+                // 'clojure': {
+                //     name: 'Clojure',
+                //     mimeType: 'text/x-clojure',
+                //     icon: 'fa fa-code'
+                // }
 
             };
         }
