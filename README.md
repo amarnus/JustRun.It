@@ -2,6 +2,8 @@
 
 [Site](http://gophergala.justrun.it)
 
+![Screenshot](https://github.com/gophergala/JustRun.It/raw/master/static/screenshot.png)
+
 ## Motivation
 
 JustRun.It is a web application that allows users to write, run and share code snippets in any language* from a web browser A.K.A JSBin for server-side programming languages.
