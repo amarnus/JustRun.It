@@ -9,7 +9,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/justrunit/models"
 	"github.com/justrunit/routeinit"
@@ -50,7 +49,8 @@ func main() {
 	//DELETE /snippet/<snippet_id> - Remove a snippet
 	router.HandleFunc("/snippet/{snippet_id}", DeleteSnippetById).
 		Methods("DELETE")
-	//POST /snippet/<snippet_id>/run - Run the snippet
+
+	/*//POST /snippet/<snippet_id>/run - Run the snippet
 	router.HandleFunc("/snippet/{snippet_id}/run", RunSnippetById).
 		Methods("POST")
 	//POST /snippet/<snippet_id>/lint - Lint the snippet
@@ -59,6 +59,7 @@ func main() {
 	//POST /snippet/<snippet_id>/install - Install snippet dependencies
 	router.HandleFunc("/snippet/{snippet_id}/install", InstallDepsById).
 		Methods("POST")
+	*/
 
 	//Serves the static folder
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
@@ -192,6 +193,7 @@ func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
 	return
 }
 
+/*
 func RunSnippetById(resp http.ResponseWriter, req *http.Request) {
 	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
@@ -236,3 +238,4 @@ func InstallDepsById(resp http.ResponseWriter, req *http.Request) {
 	}
 	return
 }
+*/
