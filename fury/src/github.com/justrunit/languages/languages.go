@@ -52,6 +52,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"go": {
 				"deps_grep": "sed ':a;N;$!ba;s/\n/ /g' | perl -nle 'if ($_ =~ /import\\s*\\(\\s*(.*?)\\s*\\)/) { $v = $1; $v =~ s/\\s+/\\n/g; $v =~ s/\\\"//g; print $v;}'",
 				"deps_file": "Goopfile",
+				"code_file": "code.go",
 				"install_deps": "if [ -s \"Goopfile\" ]; then goop install; fi;",
 				"lint_error_regexes": [
 					"Errors"

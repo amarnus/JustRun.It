@@ -163,7 +163,8 @@ func setContainerContext(body map[string]interface{}) (sidDetails map[string]int
 	}
 
 	// 2. Dump snippet into folder
-	codeFilePath := dir + "/code"
+	codeFilePath := dir + "/" + getCodeFileName(body["language"].(string))
+	log.Println("Code file " + codeFilePath)
 	err := ioutil.WriteFile(codeFilePath, []byte(body["snippet"].(string)), 0777)
 	if err != nil {
 		msg = "Error writing to code file in container dir: " + err.Error()
@@ -191,11 +192,11 @@ func setLanguageContext(dir string, language string, depsInput interface{}) (lc 
 	languageConfigs := languages.GetLanguageConfigs()
 	log.Println(languageConfigs)
 
-	// Get code file path
-	code := dir + "/code"
-
 	// Language specific configs
 	lc = languageConfigs[language].(map[string]interface{})
+
+	// Get code file path
+	code := dir + getCodeFileName(language)
 
 	// Generate deps
 	deps := []byte("")
@@ -223,6 +224,23 @@ func setLanguageContext(dir string, language string, depsInput interface{}) (lc 
 	// Write to deps file
 	ioutil.WriteFile(dir + "/" + lc["deps_file"].(string), []byte(deps), 0777)
 	return
+}
+
+func getCodeFileName(language string) (codeFileStr string) {
+	// Read config file for languages
+	languageConfigs := languages.GetLanguageConfigs()
+
+	// Language specific configs
+	lc := languageConfigs[language].(map[string]interface{})
+	codeFile := lc[ "code_file" ]
+	if codeFile == nil {
+		codeFileStr = "code"
+	} else {
+		codeFileStr = codeFile.(string)
+	}
+
+	log.Println("File path " + codeFileStr)
+	return codeFileStr
 }
 
 // Execute container, wait for it to complete, collect output and send
