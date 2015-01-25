@@ -88,12 +88,13 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
         },
 
         runSnippet: function(language, snippetId, code) {
+            var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
             if (language === 'javascript') {
                 language = 'nodejs';
             }
             if (ws) {
                 ws.send(JSON.stringify({
-                    id: 'foo'
+                    id: sessionId
                 }));
             }
             return $http({
@@ -102,7 +103,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 data: {
                     language: language,
                     uid: snippetId,
-                    sid: 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId,
+                    sid: sessionId,
                     snippet: code
                 } 
             });
