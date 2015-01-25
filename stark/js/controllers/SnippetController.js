@@ -257,11 +257,14 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             $scope.$apply(function() {
                 $scope.ui.state.isRunning = false;
                 LocalSnippetService.hideGlobalProgressBar();
+                LocalSnippetService.toast('Your snippet run has ended.');
             });
         }
         else if (packet.data === 'deps-complete') {
             $scope.$apply(function() {
                 $scope.ui.state.isInstalling = false;
+                LocalSnippetService.hideGlobalProgressBar();
+                LocalSnippetService.toast('Your snippet dependencies have been installed.');
             });
         }
         else {
