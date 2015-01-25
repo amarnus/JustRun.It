@@ -36,6 +36,12 @@
         <md-button class="md-button-snippet-run" ng-click="runSnippet()" ng-disabled="ui.state.isRunning">
             <i class="fa fa-play"></i><span hide-sm>&nbsp;&nbsp;Run</span>
         </md-button>&nbsp;
+        <md-button ng-click="showDepsDialog()" ng-show="!ui.state.runOnly">
+          <i class="fa fa-check-square-o"></i><span hide-sm>&nbsp;&nbsp;Deps</span>
+        </md-button>
+        <md-button ng-click="lintSnippet()" ng-show="!ui.state.runOnly">
+          <i class="fa fa-beer"></i><span hide-sm>&nbsp;&nbsp;Lint</span>
+        </md-button>
         <md-button ng-click="tagSnippet()">
           <i class="fa fa-tags"></i><span hide-sm>&nbsp;&nbsp;Tags<span ng-if="ui.snippet.tags.length"> ( {{ ui.snippet.tags.length }} )</span></span>
         </md-button>&nbsp;

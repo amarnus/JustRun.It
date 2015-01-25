@@ -4,6 +4,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
     function($http, $q, $timeout, $log, LocalSnippetService) {
 
     var baseUrl = 'http://gophergala.justrun.it';
+    
     var ws = new ReconnectingWebSocket( 'ws://gophergala.justrun.it/ws/io' );
 
     ws.onopen = function() {
@@ -106,6 +107,28 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             });
         },
 
+        installDeps: function(language, snippetId, code) {
+            var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
+            if (language === 'javascript') {
+                language = 'nodejs';
+            }
+            if (ws) {
+                ws.send(JSON.stringify({
+                    id: sessionId
+                }));
+            }
+            return $http({
+                method: 'POST',
+                url: baseUrl + '/install/deps',
+                data: {
+                    language: language,
+                    uid: snippetId,
+                    sid: sessionId,
+                    snippet: code
+                } 
+            });
+        },
+
         lintSnippet: function() {
             var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
             if (language === 'javascript') {
@@ -113,7 +136,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             }
             return $http({
                 method: 'POST',
-                url: baseUrl + '/lint',
+                url: baseUrl + '/lint/complete',
                 data: {
                     language: language,
                     uid: snippetId,

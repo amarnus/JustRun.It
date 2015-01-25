@@ -1,0 +1,12 @@
+<md-dialog class="md-dialog-snippet-tags" flex="60" flex-sm="90">
+  <md-content>
+    <h1>Install</h1>
+    <md-divider></md-divider>
+    <md-input-container flex>
+        <label>Dependencies</label>
+        <input type="text" ng-model="deps"/>
+        <p>Separated by commas.</p>
+    </md-input-container>
+    <md-button class="md-raised md-primary" ng-click="installDeps()">Install</md-button>
+  </md-content>
+</md-dialog>
