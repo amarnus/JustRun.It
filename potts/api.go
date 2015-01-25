@@ -102,7 +102,7 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	language := body["language_code"].(string)
-	snippet := models.Snippet{LanguageCode: language}
+	snippet := models.Snippet{LanguageCode: language, Tags: []string{language}}
 	snippetId, ok, err := models.CreateSnippet(&snippet)
 	if err != nil {
 		enc.Encode(routeinit.ApiResponse{ErrorMessage: err.Error(), Status: ok})
