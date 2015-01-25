@@ -2,7 +2,7 @@
 
 [Site](http://gophergala.justrun.it)
 
-![Screenshot](https://raw.githubusercontent.com/gophergala/JustRun.It/master/static/screenshot.png)
+![Screenshot](https://github.com/gophergala/JustRun.It/raw/master/static/screenshot.png)
 
 ## Motivation
 
