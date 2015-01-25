@@ -98,7 +98,6 @@ func setSessionIDAsCookie(resp http.ResponseWriter, sessionId string) http.Respo
 }
 
 func FilterSnippetsByTag(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, _, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	tag := req.FormValue("tag")
 	if !validated {
@@ -115,7 +114,6 @@ func FilterSnippetsByTag(resp http.ResponseWriter, req *http.Request) {
 }
 
 func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, _, enc, body := routeinit.InitHandling(req, resp, []string{
 		"language_code",
 	})
@@ -138,7 +136,6 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 }
 
 func FilterSnippetsByUser(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, _, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	session, _ := globalStore.Get(req, "session-name")
 	sessionUser := session.ID
@@ -156,7 +153,6 @@ func FilterSnippetsByUser(resp http.ResponseWriter, req *http.Request) {
 }
 
 func FilterSnippetById(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -179,7 +175,6 @@ func FilterSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func UpdateSnippetById(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	routeVariables := mux.Vars(req)
 	snippetId := routeVariables["snippet_id"]
 	decoder := json.NewDecoder(req.Body)
@@ -200,7 +195,6 @@ func UpdateSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -221,7 +215,6 @@ func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
 
 /*
 func RunSnippetById(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -236,7 +229,6 @@ func RunSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func LintSnippetById(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
@@ -251,7 +243,6 @@ func LintSnippetById(resp http.ResponseWriter, req *http.Request) {
 }
 
 func InstallDepsById(resp http.ResponseWriter, req *http.Request) {
-	resp = setACLHeaders(resp)
 	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
 	if !validated {
 		return
