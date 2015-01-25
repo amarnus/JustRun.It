@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('justRunIt').controller('SnippetGalleryController', [ '$scope', 'publicSnippets', 'mySnippets',
-    function($scope, publicSnippets, mySnippets) {
+angular.module('justRunIt').controller('SnippetGalleryController', [ '$scope', 'publicSnippets',
+    'mySnippets', 'LocalSnippetService',
+    function($scope, publicSnippets, mySnippets, LocalSnippetService) {
 
         var supportedLanguages = LocalSnippetService.getLanguages();
 
