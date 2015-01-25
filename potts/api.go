@@ -63,8 +63,8 @@ func main() {
 	//Serves the static folder
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	http.Handle("/", router)
-	log.Println("Potts waiting for Stark at localhost:80")
-	err := http.ListenAndServe(":80", router)
+	log.Println("Potts waiting for Stark at localhost:8000")
+	err := http.ListenAndServe(":8000", router)
 	if err != nil {
 		log.Println(err)
 	}
@@ -102,7 +102,7 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	language := body["language_code"].(string)
-	snippet := models.Snippet{LanguageCode: language}
+	snippet := models.Snippet{LanguageCode: language, Tags: []string{language}}
 	snippetId, ok, err := models.CreateSnippet(&snippet)
 	if err != nil {
 		enc.Encode(routeinit.ApiResponse{ErrorMessage: err.Error(), Status: ok})
