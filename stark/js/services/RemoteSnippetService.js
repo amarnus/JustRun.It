@@ -65,14 +65,6 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 deferred.reject(data);
             });
             return deferred.promise;
-            // return {
-            //     language_code: 'php',
-            //     title: 'Exchange Selection Sort',
-            //     description: 'Simple algorithm to sort a list of numbers.',
-            //     tags: [ 'algorithm', 'web' ],
-            //     code: '<?php\n\necho "Hello World";\n',
-            //     deps: []
-            // };
         },
 
         saveSnippet: function(snippet) {
@@ -110,7 +102,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
                 data: {
                     language: language,
                     uid: snippetId,
-                    sid: LocalSnippetService.getUserSessionId() || 'foo', // TODO: Remove this.
+                    sid: 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId,
                     snippet: code
                 } 
             });

@@ -10,7 +10,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     var editor;
 
     // Edit mode or Run-only mode.
-    var isAuthor = true; // LocalSnippetService.isCurrentUser(snippet.session_id)
+    var isAuthor = LocalSnippetService.isCurrentUser(snippet.session_id);
 
     // Add language info.
     if (snippet.language_code) {

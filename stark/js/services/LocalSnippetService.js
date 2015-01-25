@@ -4,7 +4,7 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
     function($mdToast, $rootScope, $cookies) {
 
     var toastPosition = 'top right';
-    var sessionKey = 'anonymous_session_id';
+    var sessionKey = 'session_id';
 
     return {
 
