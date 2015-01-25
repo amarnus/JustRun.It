@@ -163,7 +163,8 @@ func setContainerContext(body map[string]interface{}) (sidDetails map[string]int
 	}
 
 	// 2. Dump snippet into folder
-	codeFilePath := dir + "/" + getCodeFileName(body["language"].(string))
+	codeFileStr := getCodeFileName(body["language"].(string))
+	codeFilePath := dir + "/" + codeFileStr
 	log.Println("Code file " + codeFilePath)
 	err := ioutil.WriteFile(codeFilePath, []byte(body["snippet"].(string)), 0777)
 	if err != nil {
@@ -180,6 +181,7 @@ func setContainerContext(body map[string]interface{}) (sidDetails map[string]int
 	sidDetails[ "uid" ] = uid
 	sidDetails[ "install_deps" ] = lc[ "install_deps" ].(string)
 	sidDetails[ "status" ] = status
+	sidDetails[ "code_file" ] = codeFileStr
 
 	status = 1
 	return
@@ -258,7 +260,7 @@ func executeContainer(uid string, sidDetails map[string]interface{}, isLint int)
 	dockerCmd := "docker run -v " + "\"" + dir + ":/home/justrunit/services/myproject\"" +
 		" justrunit/" + language
 	if isLint == 1 {
-		dockerCmd = dockerCmd + " /bin/bash -c '$LINT_CMD code'"
+		dockerCmd = dockerCmd + " /bin/bash -c '$LINT_CMD " + sidDetails[ "code_file" ].(string) + "'"
 	}
 	if sidDetails[ "op" ] == "install-deps" {
 		dockerCmd = dockerCmd + " /bin/bash -c '" + sidDetails["install_deps"].(string) + "'"
@@ -273,7 +275,10 @@ func executeContainer(uid string, sidDetails map[string]interface{}, isLint int)
 	stdoutBytes, _ := ioutil.ReadAll(dockerRunCmdOut)
 	stderrBytes, _ := ioutil.ReadAll(dockerRunCmdErr)
 
-	str := string(stdoutBytes) + "\nStderr\n" + string(stderrBytes);
+	str := string(stdoutBytes);
+	if len(stderrBytes) > 0 {
+		str = str + "\n" + string(stderrBytes);
+	}
 
 	// Check for lint errors
 	if isLint == 1 {

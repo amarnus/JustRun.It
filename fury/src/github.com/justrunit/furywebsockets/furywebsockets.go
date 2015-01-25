@@ -106,7 +106,7 @@ func (c *connection) reader() {
 
 			c.ws.WriteMessage(websocket.TextMessage, []byte("{\"status\":0,\"error\":\"Send sid to monitor\"}"))
 
-		} else if msgMap[ "id" ] != nil && c.sid == "" {
+		} else if msgMap[ "id" ] != nil {
 
 			c.sid = msgMap[ "id" ].(string)
 			log.Println("Creating websocket connection for sid " + c.sid)
