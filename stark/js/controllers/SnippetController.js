@@ -181,7 +181,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
 
     ws.onmessage = function(message) {
         var packet = JSON.parse(message.data);
-        term.write(packet.data);
+        term.write(packet.data + '\r\n');
     };
 
     Mousetrap.bind([ 'command+s', 'ctrl+s' ], function() {
