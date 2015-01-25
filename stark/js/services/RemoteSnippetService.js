@@ -80,7 +80,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
         forkSnippet: function(snippetId) {
             return $http({
                 method: 'POST',
-                url: baseUrl + '/snippet/' + snippet._id + '/fork'
+                url: baseUrl + '/snippet/' + snippetId + '/fork'
             });
         },
 
