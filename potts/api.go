@@ -4,13 +4,11 @@
 
 //TODO: Write unit-tests for mux request handling with gocheck
 //TODO: Fix Status Codes and Error Messsages according to HTTP Conventions
-//TODO: REMOVE `setACLHeaders` BEFORE RELEASING THE APP ON PRODUCTION
 package main
 
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	//"github.com/gorilla/sessions"
 	"github.com/justrunit/models"
 	"github.com/justrunit/routeinit"
 	"gopkg.in/boj/redistore.v1"
@@ -62,17 +60,6 @@ func main() {
 	//DELETE /snippet/<snippet_id> - Remove a snippet
 	router.HandleFunc("/snippet/{snippet_id}", DeleteSnippetById).
 		Methods("DELETE")
-
-	/*//POST /snippet/<snippet_id>/run - Run the snippet
-	router.HandleFunc("/snippet/{snippet_id}/run", RunSnippetById).
-		Methods("POST")
-	//POST /snippet/<snippet_id>/lint - Lint the snippet
-	router.HandleFunc("/snippet/{snippet_id}/lint", LintSnippetById).
-		Methods("POST")
-	//POST /snippet/<snippet_id>/install - Install snippet dependencies
-	router.HandleFunc("/snippet/{snippet_id}/install", InstallDepsById).
-		Methods("POST")
-	*/
 
 	//Serves the static folder
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
@@ -212,47 +199,3 @@ func DeleteSnippetById(resp http.ResponseWriter, req *http.Request) {
 	}
 	return
 }
-
-/*
-func RunSnippetById(resp http.ResponseWriter, req *http.Request) {
-	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
-	if !validated {
-		return
-	}
-	snippetId, ok := urlParams["snippet_id"]
-	fmt.Printf("Running Snippet %s", snippetId)
-	if ok != true {
-		enc.Encode(routeinit.ApiResponse{ErrorMessage: "Invalid URL", Status: false})
-		return
-	}
-	return
-}
-
-func LintSnippetById(resp http.ResponseWriter, req *http.Request) {
-	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
-	if !validated {
-		return
-	}
-	snippetId, ok := urlParams["snippet_id"]
-	fmt.Printf("Linting Snippet %s", snippetId)
-	if ok != true {
-		enc.Encode(routeinit.ApiResponse{ErrorMessage: "Invalid URL", Status: false})
-		return
-	}
-	return
-}
-
-func InstallDepsById(resp http.ResponseWriter, req *http.Request) {
-	validated, urlParams, enc, _ := routeinit.InitHandling(req, resp, []string{})
-	if !validated {
-		return
-	}
-	snippetId, ok := urlParams["snippet_id"]
-	fmt.Printf("Installing Dependencies Snippet %s", snippetId)
-	if ok != true {
-		enc.Encode(routeinit.ApiResponse{ErrorMessage: "Invalid URL", Status: false})
-		return
-	}
-	return
-}
-*/
