@@ -19,6 +19,10 @@ Snippet execution manager in all Suit instances
 
 * [`POST /lint/complete`](#post-lintcomplete)
 
+### [Websocket](#websocket-1)
+
+* [`ws /ws/io`](#ws-wsio)
+
 ## API Reference
 
 ### Run
@@ -135,6 +139,39 @@ Lint check a snippet, wait for it to complete, and collect output from STDOUT an
       "function subtract(number1, number2) {",
       "                 ^ ",
    ]
+}
+```
+
+### Websocket
+
+#### ws /ws/io
+
+Websocket to provide IO to a running snippet
+
+A single session can run multiple operations. All operations' IO
+are routed to the session's websocket by the session ID.
+
+The listener needs to just listen to this server's websocket
+at its Session ID and provide any input need to its snippet in
+the same websocket
+
+##### input parameters
+
+`id` - **string** - Session ID to listen to
+
+##### example request
+
+	$ /usr/lib/node_modules/ws/wscat/bin/wscat -c ws://localhost:3000/ws/io --origin http://localhost:3000
+	$ > {"id":"python_session_5678"}
+
+##### example output
+
+A single websocket stream event
+
+```javascript
+{
+   "id" : "python_session_5678",
+   "data" : "00524 lines in /env/lib/python2.7/site-packages/setuptools/tests/test_sdist.py"
 }
 ```
 
