@@ -4,8 +4,31 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
     function($http, $q, $timeout, LocalSnippetService) {
 
     var baseUrl = 'http://gophergala.justrun.it';
+    var ws = new WebSocket( 'ws://gophergala.justrun.it/ws/io' );
+
+    ws.onopen = function() {
+        $log.debug('WebSocket connection was initiated successfully...');
+    };
+
+    ws.onmessage = function(message) {
+        $log.log(message);
+        // Write to the terminal here...
+    };
+
+    ws.onclose = function() {
+        $log.debug('WebSocket connection was closed...');
+    };
+
+    ws.onerror = function(error) {
+        $log.error('Error with the WebSocket connection...');
+        $log.error(error);
+    };
 
     return {
+
+        getWebSocket: function() {
+            return ws;
+        },
 
         createSnippet: function(languageCode) {
             return $http({
@@ -80,6 +103,11 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
         runSnippet: function(language, snippetId, code) {
             if (language === 'javascript') {
                 language = 'nodejs';
+            }
+            if (ws) {
+                ws.send(JSON.stringify({
+                    id: 'foo'
+                }));
             }
             return $http({
                 method: 'POST',

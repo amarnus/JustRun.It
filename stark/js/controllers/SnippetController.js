@@ -131,7 +131,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         }
 
         $scope.ui.state.isRunning = true;
-        LocalSnippetService.showGlobalProgressBar();
+        LocalSnippetService.showGlobalProgressBar();    
         RemoteSnippetService.runSnippet(snippet.language_code, snippet._id, $scope.ui.snippet.code)
             .success(function(response) {
                 $scope.ui.state.isRunning = false;
@@ -177,24 +177,11 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     });
     term.open(document.getElementById('terminal'));
 
-    var ws = new WebSocket( 'ws://gophergala.justrun.it/ws/io' );
-
-    ws.onopen = function() {
-        $log.debug('WebSocket connection was initiated successfully...');
-    };
+    var ws = RemoteSnippetService.getWebSocket();
 
     ws.onmessage = function(message) {
         $log.log(message);
         // Write to the terminal here...
-    };
-
-    ws.onclose = function() {
-        $log.debug('WebSocket connection was closed...');
-    };
-
-    ws.onerror = function(error) {
-        $log.error('Error with the WebSocket connection...');
-        $log.error(error);
     };
 
     // var socket = io.connect();
