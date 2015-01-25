@@ -4,7 +4,7 @@ angular.module('justRunIt').controller('SnippetGalleryController', [ '$scope', '
     'mySnippets', 'LocalSnippetService',
     function($scope, publicSnippets, mySnippets, LocalSnippetService) {
 
-        var supportedLanguages = LocalSnippetService.getLanguages();
+        var supportedLanguages = LocalSnippetService.getSupportedLanguages();
 
         for (var i = 0; i < publicSnippets.length; i++) {
             publicSnippets[i].langInfo = supportedLanguages[publicSnippets[i].language_code];
