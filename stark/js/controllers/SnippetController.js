@@ -118,7 +118,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             .success(function(response) {
                 $scope.ui.state.isForking = false;
                 LocalSnippetService.hideGlobalProgressBar();
-                $state.go('snippetDetail', { snippet_id: response._id });
+                $state.go('snippetDetail', { snippet_id: response.result.snippet_id });
                 LocalSnippetService.toast('You have successfully forked a ' + snippet.langInfo.name + ' snippet.');
             })
             .error(onError);
