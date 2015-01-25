@@ -292,6 +292,11 @@ func executeContainer(uid string, sidDetails map[string]interface{}, isLint int)
 				status = 0
 			}
 		}
+		match, _ := regexp.MatchString("Cannot start container", str)
+		if match {
+			str = "An error occured in our execution context. Please run the operation again after a while"
+			status = 0
+		}
 	}
 
 	results = strings.Split(str, "\n")
