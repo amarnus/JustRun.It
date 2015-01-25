@@ -1,18 +1,13 @@
 'use strict';
 
-angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$timeout', 'LocalSnippetService',
-    function($http, $q, $timeout, LocalSnippetService) {
+angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$timeout', '$log', 'LocalSnippetService',
+    function($http, $q, $timeout, $log, LocalSnippetService) {
 
     var baseUrl = 'http://gophergala.justrun.it';
     var ws = new WebSocket( 'ws://gophergala.justrun.it/ws/io' );
 
     ws.onopen = function() {
         $log.debug('WebSocket connection was initiated successfully...');
-    };
-
-    ws.onmessage = function(message) {
-        $log.log(message);
-        // Write to the terminal here...
     };
 
     ws.onclose = function() {
