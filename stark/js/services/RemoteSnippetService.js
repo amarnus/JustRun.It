@@ -4,7 +4,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
     function($http, $q, $timeout, $log, LocalSnippetService) {
 
     var baseUrl = 'http://gophergala.justrun.it';
-    var ws = new WebSocket( 'ws://gophergala.justrun.it/ws/io' );
+    var ws = new ReconnectingWebSocket( 'ws://gophergala.justrun.it/ws/io' );
 
     ws.onopen = function() {
         $log.debug('WebSocket connection was initiated successfully...');

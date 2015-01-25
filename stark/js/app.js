@@ -49,6 +49,21 @@ app.config([ '$stateProvider', '$urlRouterProvider', '$mdThemingProvider',
 
 } ]);
 
-app.run([ '$log', function($log) {
+app.run([ '$log', '$rootScope', 'RemoteSnippetService', function($log, $rootScope, RemoteSnippetService) {
     $log.debug('JustRun.It client has initialized...');
+
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        if (toState === 'snippetDetail') {
+            $log.debug('Initializing WebSocket connection...');
+            ws = RemoteSnippetService.getWebSocket();
+            ws.open();
+        }
+
+        if (fromState === 'snippetDetail') {
+            $log.debug('Closing WebSocket connection...');
+            ws = RemoteSnippetService.getWebSocket();
+            ws.close(); 
+        }
+    });
+    
 } ]);

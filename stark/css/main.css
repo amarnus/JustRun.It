@@ -25,8 +25,12 @@ md-whiteframe {
   padding: 0.5em;
 }
 
-.md-list-language-chooser .md-tile-icon, .md-snippet-language-icon {
+.md-list-language-chooser .md-tile-icon {
     font-size: 250%;
+}
+
+.md-snippet-language-icon {
+  font-size: 200%;
 }
 
 .md-list-language-chooser .md-tile-name > h2 {
