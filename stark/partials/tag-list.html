@@ -8,12 +8,12 @@
           <div class="md-tile-content md-tile-name" layout="row" layout-align="left center">
             <md-input-container flex>
                 <label>{{ $index + 1 }}.</label>
-                <input type="text" ng-model="tags[$index]"/>
+                <input type="text" ng-model="tags[$index]" ng-disabled="runOnly"/>
             </md-input-container>
           </div>
         </md-item-content>
       </md-item>
     </md-list>
-    <md-button class="md-raised md-primary" ng-click="saveTags()">Save</md-button>
+    <md-button class="md-raised md-primary" ng-click="saveTags()" ng-hide="runOnly">Save</md-button>
   </md-content>
 </md-dialog>

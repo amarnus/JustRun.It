@@ -25,7 +25,7 @@ angular.module('justRunIt').controller('SnippetAddController', [ '$scope', '$log
                     LocalSnippetService.toastError(response.message);
                 }
                 else {
-                    LocalSnippetService.toastError('Cannot create a new snippet right now. Please try again later.');
+                    LocalSnippetService.toastError('You cannot create a new snippet right now. Please try again later.');
                 }
             });
     };

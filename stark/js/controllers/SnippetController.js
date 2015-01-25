@@ -10,7 +10,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
     var editor;
 
     // Edit mode or Run-only mode.
-    var isAuthor = true; // LocalSnippetService.isCurrentUser(snippet.session_id)
+    var isAuthor = false; // LocalSnippetService.isCurrentUser(snippet.session_id)
 
     // Add language info.
     if (snippet.language_code) {
@@ -26,7 +26,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             lineNumbers: true,
             mode: snippet.langInfo.mimeType,
             theme: editorTheme,
-            readOnly: !isAuthor
+            readOnly: !isAuthor ? 'nocursor' : false
         },
         state: {
             runOnly: !isAuthor,
@@ -83,6 +83,7 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             controller: [ '$scope', function($scope) {
                 $scope.tagIndices = [ 1, 2, 3, 4, 5 ];
                 $scope.tags = snippet.tags;
+                $scope.runOnly = !isAuthor;
                 $scope.saveTags = function() {
                     var tags = [];
                     for(var i = 0; i < $scope.tags.length; i++) {
@@ -200,6 +201,9 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
         $scope.$apply(function() {
             if (!$scope.ui.state.isSaving && isAuthor) {
                 $scope.saveSnippet();
+            }
+            else {
+                $log.debug('Ignoring "Save" command...');
             }
         });
         return false;
