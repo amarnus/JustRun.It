@@ -26,7 +26,9 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             lineNumbers: true,
             mode: snippet.langInfo.mimeType,
             theme: editorTheme,
-            readOnly: !isAuthor ? 'nocursor' : false
+            readOnly: !isAuthor ? 'nocursor' : false,
+            lineWrapping: true,
+            smartIndent: true
         },
         state: {
             runOnly: !isAuthor,
