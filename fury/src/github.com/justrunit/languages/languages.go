@@ -15,7 +15,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"python": {
 				"deps_grep": "grep -P '\\s*(?:from|import)' | perl -nle 'print $1 if /(?:import|from)\\s*([\\w\\-]+)/'",
 				"deps_file": "requirements.txt",
-				"install_deps": "virtualenv env && pip install -r requirements.txt",
+				"install_deps": "virtualenv env && if [ -s \"requirements.txt\" ]; then pip install -r requirements.txt; fi;",
 				"lint_error_regexes": [
 					"invalid syntax"
 				]
@@ -26,7 +26,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 				],
 				"deps_grep": "grep -P '\\s*(?:require )' | perl -nle 'print \"gem \\\"$1\\\"\" if /(?:require)\\s*.([\\w\\-]+)./'",
 				"deps_file": "Gemfile",
-				"install_deps": "bundler install",
+				"install_deps": "if [ -s \"Gemfile\" ]; then bundle install; fi;",
 				"lint_error_regexes": [
 					"error",
 					"undefined method"
@@ -35,7 +35,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"nodejs": {
 				"deps_grep": "grep -P 'require\\s*\\(' | perl -nle 'print $1 if /require\\s*\\(.(.*?).\\s*\\)/'",
 				"deps_file": "deps",
-				"install_deps": "cat deps | xargs -l npm install",
+				"install_deps": "if [ -s \"deps\" ]; then cat deps | xargs -l npm install; fi;",
 				"lint_error_regexes": [
 					"error",
 					"undefined method"
@@ -44,7 +44,7 @@ func GetLanguageConfigs() (languages map[string]interface{}) {
 			"php": {
 				"deps_grep": "nodepsgrep",
 				"deps_file": "composer.json",
-				"install_deps": "composer install",
+				"install_deps": "if [ -s \"composer.json\" ]; then composer install; fi;",
 				"lint_error_regexes": [
 					"Errors parsing"
 				]

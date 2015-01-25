@@ -200,7 +200,7 @@ func setLanguageContext(dir string, language string, depsInput interface{}) (lc 
 	// Generate deps
 	deps := []byte("")
 	if depsInput == nil {
-		cmd := "cat " + code + " | " + lc["deps_grep"].(string)
+		cmd := "cat " + code + " | " + lc["deps_grep"].(string) + " | " + "grep -v -P \"^\\s*$\""
 
 		// Generate deps
 		deps, _ = exec.Command("bash", "-c", cmd).Output()
