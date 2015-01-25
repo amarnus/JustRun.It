@@ -10,10 +10,13 @@ package main
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	//"github.com/gorilla/sessions"
 	"github.com/justrunit/models"
 	"github.com/justrunit/routeinit"
+	"gopkg.in/boj/redistore.v1"
 	"log"
 	"net/http"
+	"time"
 )
 
 type SnippetCreationResponse struct {
@@ -24,11 +27,21 @@ type SnippetsArrayResponse struct {
 	Snippets *[]models.Snippet `json:"snippets"`
 }
 
+var globalStore *redistore.RediStore
+
+const MaxAge int = 4 * 30 * 24 * 3600
+
 func main() {
 
 	/* Create router */
 	router := mux.NewRouter()
-
+	store, err := redistore.NewRediStore(10, "tcp", "172.17.42.1:6379", "", []byte("secret-key"))
+	if err != nil {
+		panic(err)
+	}
+	store.SetMaxAge(MaxAge)
+	globalStore = store
+	defer store.Close()
 	/* Add routes */
 	//GET /snippets?tag=<tag> - All snippets optionally filtered by tag.
 	router.HandleFunc("/snippets", FilterSnippetsByTag).
@@ -77,6 +90,13 @@ func setACLHeaders(resp http.ResponseWriter) http.ResponseWriter {
 	return resp
 }
 
+func setSessionIDAsCookie(resp http.ResponseWriter, sessionId string) http.ResponseWriter {
+	d := time.Duration(MaxAge) * time.Second
+	Expires := time.Now().Add(d)
+	http.SetCookie(resp, &http.Cookie{Name: "session_id", Value: sessionId, MaxAge: MaxAge, Path: "/", Expires: Expires})
+	return resp
+}
+
 func FilterSnippetsByTag(resp http.ResponseWriter, req *http.Request) {
 	resp = setACLHeaders(resp)
 	validated, _, enc, _ := routeinit.InitHandling(req, resp, []string{})
@@ -102,8 +122,11 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 	if !validated {
 		return
 	}
+	session, _ := globalStore.Get(req, "session-name")
+	session.Save(req, resp)
+	resp = setSessionIDAsCookie(resp, session.ID)
 	language := body["language_code"].(string)
-	snippet := models.Snippet{LanguageCode: language, Tags: []string{language}}
+	snippet := models.Snippet{LanguageCode: language, Tags: []string{language}, SessionId: session.ID}
 	snippetId, ok, err := models.CreateSnippet(&snippet)
 	if err != nil {
 		enc.Encode(routeinit.ApiResponse{ErrorMessage: err.Error(), Status: ok})
@@ -114,11 +137,11 @@ func CreateNewSnippet(resp http.ResponseWriter, req *http.Request) {
 	return
 }
 
-//TODO: Refactor with anonymous session ids
 func FilterSnippetsByUser(resp http.ResponseWriter, req *http.Request) {
 	resp = setACLHeaders(resp)
 	validated, _, enc, _ := routeinit.InitHandling(req, resp, []string{})
-	sessionUser := req.FormValue("session_id")
+	session, _ := globalStore.Get(req, "session-name")
+	sessionUser := session.ID
 	if !validated {
 		return
 	}
@@ -139,6 +162,9 @@ func FilterSnippetById(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	snippetId, ok := urlParams["snippet_id"]
+	session, _ := globalStore.Get(req, "session-name")
+	session.Save(req, resp)
+	resp = setSessionIDAsCookie(resp, session.ID)
 	if ok != true {
 		enc.Encode(routeinit.ApiResponse{ErrorMessage: "Invalid URL", Status: false})
 		return
