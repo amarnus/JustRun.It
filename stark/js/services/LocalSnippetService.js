@@ -6,11 +6,13 @@ angular.module('justRunIt').factory('LocalSnippetService', [ '$mdToast', '$rootS
     var toastPosition = 'top right';
     var sessionKey = 'session_id';
 
+    function getUserSessionId() {
+        return !!$cookies[sessionKey];
+    }
+
     return {
 
-        getUserSessionId: function() {
-            return !!$cookies[sessionKey];
-        },
+        getUserSessionId: getUserSessionId,
 
         isCurrentUser: function(sessionId) {
             var currentUserSessionId = getUserSessionId();
