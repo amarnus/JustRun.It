@@ -170,7 +170,7 @@ func setContainerContext(body map[string]interface{}) (sidDetails map[string]int
 	}
 
 	// 3. Set language context
-	lc := setLanguageContext(dir, body["language"].(string), sidDetails[ "deps" ])
+	lc := setLanguageContext(dir, body["language"].(string), body[ "deps" ])
 
 	// Stash container details to create later on websocket initiation
 	body[ "dir" ] = dir
@@ -215,7 +215,9 @@ func setLanguageContext(dir string, language string, depsInput interface{}) (lc 
 			deps = []byte(prefix + string(deps))
 		}
 	} else {
-		deps = depsInput.([]byte)
+		str := depsInput.(string)
+		deps = []byte(str)
+		// log.Println(string(deps))
 	}
 
 	// Write to deps file
