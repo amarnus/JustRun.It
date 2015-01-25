@@ -107,7 +107,7 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             });
         },
 
-        installDeps: function(language, snippetId, code) {
+        installDeps: function(language, snippetId, code, deps) {
             var sessionId = 'session_' + LocalSnippetService.getUserSessionId() + '_snippet_' + snippetId;
             if (language === 'javascript') {
                 language = 'nodejs';
@@ -119,12 +119,13 @@ angular.module('justRunIt').factory('RemoteSnippetService', [ '$http', '$q', '$t
             }
             return $http({
                 method: 'POST',
-                url: baseUrl + '/install/deps',
+                url: baseUrl + '/install',
                 data: {
                     language: language,
                     uid: snippetId,
                     sid: sessionId,
-                    snippet: code
+                    snippet: code,
+                    deps: deps
                 } 
             });
         },

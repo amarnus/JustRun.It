@@ -4,8 +4,7 @@
     <md-divider></md-divider>
     <md-input-container flex>
         <label>Dependencies</label>
-        <input type="text" ng-model="deps"/>
-        <p>Separate the names of each of your dependencies with commas.</p>
+        <textarea ng-model="deps"></textarea>
     </md-input-container>
     <md-button class="md-raised md-primary" ng-click="installDeps()">Install</md-button>
   </md-content>

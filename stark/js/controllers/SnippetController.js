@@ -60,11 +60,11 @@ angular.module('justRunIt').controller('SnippetController', [ '$scope', '$log', 
             }
         }
 
-        deps = deps || [];
+        deps = deps || '';
         term.eraseInDisplay([ 2 ]);
         $scope.ui.state.isInstalling = true;
         LocalSnippetService.showGlobalProgressBar();    
-        RemoteSnippetService.installDeps(snippet._id, deps)
+        RemoteSnippetService.installDeps(snippet.language_code, snippet._id, $scope.ui.snippet.code, deps)
             .success(function(response) {
                 LocalSnippetService.hideGlobalProgressBar();
                 if (!response.status) {
