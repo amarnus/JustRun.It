@@ -30,7 +30,9 @@
             </md-input-container>
         </div>
         <div flex>
-          <md-switch class="md-hue-2" ng-model="ui.snippet.is_public" aria-label="Is snippet public?"> <span ng-if="ui.snippet.is_public">Public</span> <span ng-if="!ui.snippet.is_public">Private</span>
+          <md-switch class="md-hue-2" ng-model="ui.snippet.is_public" aria-label="Is snippet public?" ng-show="!ui.state.runOnly">
+            <span ng-if="ui.snippet.is_public">Public</span>
+            <span ng-if="!ui.snippet.is_public">Private</span>
           </md-switch>
         </div>
         <md-button class="md-button-snippet-save" ng-click="saveSnippet()" ng-disabled="ui.state.isSaving" ng-show="!ui.state.runOnly">

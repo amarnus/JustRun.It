@@ -45,7 +45,7 @@ app.config([ '$stateProvider', '$urlRouterProvider', '$mdThemingProvider',
     $stateProvider.state('snippetDetail', {
         url: '/snippet/:snippet_id?mode',
         controller: 'SnippetController',
-        templateUrl: 'partials/snippet.html',
+        templateUrl: 'partials/snippet.html?v=0.1.0',
         resolve: {
             snippet: [ 'RemoteSnippetService', '$stateParams', function(RemoteSnippetService, $stateParams) {
                 return RemoteSnippetService.getSnippet($stateParams.snippet_id);
