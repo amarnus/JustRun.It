@@ -18,7 +18,9 @@
                     <i class="{{ item.langInfo.icon }}"></i>   
                   </div>
                   <div class="md-tile-content" layout="row" layout-align="left center">
-                    <a ui-sref="snippetDetail({ 'snippet_id': item._id })"><h3>{{ item.title }}</h3></a>
+                    <a ui-sref="snippetDetail({ 'snippet_id': item._id })">
+                      <h3>{{ item.title || 'Un-named Snippet' }}</h3>
+                    </a>
                   </div>
                 </md-item-content>
                 <md-divider></md-divider>
@@ -33,7 +35,9 @@
                     <i class="{{ item.langInfo.icon }}"></i>   
                   </div>
                   <div class="md-tile-content" layout="row" layout-align="left center">
-                    <a ui-sref="snippetDetail({ 'snippet_id': item._id })"><h3>{{ item.title }}</h3></a>
+                    <a ui-sref="snippetDetail({ 'snippet_id': item._id })">
+                      <h3>{{ item.title || 'Un-named Snippet' }}</h3>
+                    </a>
                   </div>
                 </md-item-content>
                 <md-divider></md-divider>
