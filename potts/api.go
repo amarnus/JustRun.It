@@ -68,7 +68,7 @@ func main() {
 	//Serves the static folder
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	log.Println("Potts waiting for Stark at localhost:8000")
-	err := http.ListenAndServe(":8000", router)
+	err = http.ListenAndServe(":8000", router)
 	if err != nil {
 		log.Println(err)
 	}
