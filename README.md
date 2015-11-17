@@ -32,16 +32,16 @@ Users are freed from the hassle of setting up a language runtime just for writin
 
 JustRun.It is composed of three main components:
 
-### [Potts](https://github.com/gophergala/JustRun.It/tree/master/potts)
+### [Potts](https://github.com/amarnus/JustRun.It/tree/master/potts)
 
 Potts is a REST Server written in Go that manages JustRun.It snippets and their metadata.
 
-### [Fury](https://github.com/gophergala/JustRun.It/tree/master/fury)
+### [Fury](https://github.com/amarnus/JustRun.It/tree/master/fury)
 
 Fury is a REST Server written in Go that executes JustRun.It snippets in Docker containers.
 
 It uses Go channels extensively to pipe the STDOUT/STDERR stream of the running snippet to the user's browser via WebSockets.
 
-### [Stark](https://github.com/gophergala/JustRun.It/tree/master/stark)
+### [Stark](https://github.com/amarnus/JustRun.It/tree/master/stark)
 
 Stark is a AngularJS-powered client application.
